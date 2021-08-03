@@ -27,13 +27,7 @@ export default class MyForm extends Component {
       switchValue: false,
     };
 
-    this.onInputTextChange = this.onInputTextChange.bind(this);
-    this.onSelectChange = this.onSelectChange.bind(this);
-    this.onRadioChange = this.onRadioChange.bind(this);
-    this.onDatePickerChange = this.onDatePickerChange.bind(this);
-    this.onSwitchChange = this.onSwitchChange.bind(this);
-    this.onMultipleSelectChange = this.onMultipleSelectChange.bind(this);
-    this.onTimePickerChange = this.onTimePickerChange.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.onResetBtnClick = this.onResetBtnClick.bind(this);
     this.onSubmitBtnClick = this.onSubmitBtnClick.bind(this);
   }
@@ -49,40 +43,8 @@ export default class MyForm extends Component {
     );
   }
 
-  onInputTextChange(e) {
-    this.setState({ inputTextValue: e.target.value });
-  }
-
-  onSelectChange(value) {
-    this.setState({ selectValue: value });
-  }
-
-  onMultipleSelectChange(value) {
-    console.log(value);
-    this.setState({ multipleSelectValue: value });
-  }
-
-  onRadioChange(e) {
-    this.setState({ radioValue: e.target.value });
-  }
-
-  onDatePickerChange(date, dateString) {
-    console.log(dateString);
-    this.setState({
-      datePickerString: dateString,
-    });
-  }
-
-  onTimePickerChange(time, timeString) {
-    console.log(timeString);
-    this.setState({
-      timePickerString: timeString,
-    });
-  }
-
-  onSwitchChange(val) {
-    console.log(val);
-    this.setState({ switchValue: val });
+  handleChange(value, stateName){
+    this.setState({ [stateName]: value });
   }
 
   onResetBtnClick() {
@@ -99,10 +61,13 @@ export default class MyForm extends Component {
   }
 
   onSubmitBtnClick() {
-    /*
-    var todoList = localStorage.getItem("todoListData");
-    if (!todoList) {
+    
+    let todoListString = localStorage.getItem("todoListData");
+    let todoList = null;
+    if (!todoListString) {
       todoList = {};
+    } else {
+      todoList = JSON.parse(todoListString)
     }
     let uuid = this.state.uuid;
     if (!uuid) {
@@ -118,6 +83,9 @@ export default class MyForm extends Component {
       timePickerString,
       switchValue,
     } = this.state;
+    
+    
+    console.log(todoList);
 
     todoList[uuid] = {
       uuid,
@@ -129,28 +97,62 @@ export default class MyForm extends Component {
       timePickerString,
       switchValue,
     };
-    localStorage.setItem("todoListData", todoList);
-    console.log(todoList);
-    */
+    
+    localStorage.setItem("todoListData", JSON.stringify(todoList));
+
+    
   }
 
   render() {
+
+    const selectOption = [
+      {value:1, selectName:'普通'},
+      {value:2, selectName:'重要'},
+      {value:3, selectName:'緊急'},
+    ];
+
+    const multipleSelectOption = [
+      {value:1, selectName:'Red'},
+      {value:2, selectName:'Green'},
+      {value:3, selectName:'Blue'},
+    ];
+
+    const radioOption = [
+      {value:1, selectName:'普通'},
+      {value:2, selectName:'重要'},
+      {value:3, selectName:'緊急'},
+    ];
+
+    const layout = {
+      labelCol: {
+        span: 8,
+      },
+      wrapperCol: {
+        span: 8,
+      },
+    };
+
     return (
       <div>
-        <Form>
+        <Form {...layout}>
           <Form.Item label="事件名稱">
             <Input
               value={this.state.inputTextValue}
-              onChange={this.onInputTextChange}
+              onChange={e=>{
+                this.handleChange(e.target.value,'inputTextValue');
+              }}
             />
           </Form.Item>
           <Form.Item label="緊急程度">
             <Select
               value={this.state.selectValue}
-              onChange={this.onSelectChange}
+              onChange={val=>{
+                this.handleChange(val,'selectValue');
+              }}
             >
-              <Select.Option value={1}>普通</Select.Option>
-              <Select.Option value={2}>重要</Select.Option>
+              {selectOption.map((val)=>{
+                return <Select.Option value={val.value}>{val.selectName}</Select.Option>;
+              })}
             </Select>
           </Form.Item>
 
@@ -169,22 +171,26 @@ export default class MyForm extends Component {
               mode="multiple"
               placeholder="Please select favourite colors"
               value={this.state.multipleSelectValue}
-              onChange={this.onMultipleSelectChange}
+              onChange={val=>{
+                this.handleChange(val,'multipleSelectValue');
+              }}
             >
-              <Select.Option value="1">Red</Select.Option>
-              <Select.Option value="2">Green</Select.Option>
-              <Select.Option value="3">Blue</Select.Option>
+              {multipleSelectOption.map((val)=>{
+                return <Select.Option value={val.value}>{val.selectName}</Select.Option>;
+              })}
             </Select>
           </Form.Item>
 
           <Form.Item label="緊急程度2">
             <Radio.Group
-              onChange={this.onRadioChange}
+              onChange={e=>{
+                this.handleChange(e.target.value, 'radioValue');
+              }}
               value={this.state.radioValue}
             >
-              <Radio value={1}>1</Radio>
-              <Radio value={2}>2</Radio>
-              <Radio value={3}>3</Radio>
+              {radioOption.map((val)=>{
+                return <Radio value={val.value}>{val.selectName}</Radio>;
+              })}
             </Radio.Group>
           </Form.Item>
           <Form.Item label="日期">
@@ -192,24 +198,28 @@ export default class MyForm extends Component {
               value={moment(this.state.datePickerString, "YYYY-MM-DD")}
               format="YYYY-MM-DD"
               locale={locale}
-              onChange={this.onDatePickerChange}
+              onChange={(date,dateString)=>{
+                this.handleChange(dateString, 'datePickerString');
+              }}
             />
           </Form.Item>
           <Form.Item label="時間">
             <TimePicker
-              onChange={this.onTimePickerChange}
+              onChange={(time, timeString)=>{
+                this.handleChange(timeString, 'timePickerString');
+              }}
               value={moment(this.state.timePickerString, "HH:mm")}
               format="HH:mm"
             />
           </Form.Item>
 
-          <Form.Item label="已完成">
+          <Form.Item label="是否完成">
             <Switch
               value={this.state.switchValue}
-              onChange={this.onSwitchChange}
+              onChange={val=>{this.handleChange(val, 'switchValue')}}
             />
           </Form.Item>
-          <Form.Item>
+          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
             <Button
               type="primary"
               htmlType="button"
