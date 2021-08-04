@@ -26,10 +26,6 @@ export default class MyForm extends Component {
       timePickerString: "00:00",
       switchValue: false,
     };
-
-    this.handleChange = this.handleChange.bind(this);
-    this.onResetBtnClick = this.onResetBtnClick.bind(this);
-    this.onSubmitBtnClick = this.onSubmitBtnClick.bind(this);
   }
 
   uuidv4() {
@@ -43,11 +39,11 @@ export default class MyForm extends Component {
     );
   }
 
-  handleChange(value, stateName){
+  handleChange = (value, stateName) => {
     this.setState({ [stateName]: value });
-  }
+  };
 
-  onResetBtnClick() {
+  onResetBtnClick = () => {
     this.setState({
       uuid: "",
       inputTextValue: "",
@@ -58,16 +54,15 @@ export default class MyForm extends Component {
       timePickerString: "00:00",
       switchValue: false,
     });
-  }
+  };
 
-  onSubmitBtnClick() {
-    
+  onSubmitBtnClick = () => {
     let todoListString = localStorage.getItem("todoListData");
     let todoList = null;
     if (!todoListString) {
       todoList = {};
     } else {
-      todoList = JSON.parse(todoListString)
+      todoList = JSON.parse(todoListString);
     }
     let uuid = this.state.uuid;
     if (!uuid) {
@@ -83,8 +78,7 @@ export default class MyForm extends Component {
       timePickerString,
       switchValue,
     } = this.state;
-    
-    
+
     console.log(todoList);
 
     todoList[uuid] = {
@@ -97,30 +91,27 @@ export default class MyForm extends Component {
       timePickerString,
       switchValue,
     };
-    
-    localStorage.setItem("todoListData", JSON.stringify(todoList));
 
-    
-  }
+    localStorage.setItem("todoListData", JSON.stringify(todoList));
+  };
 
   render() {
-
     const selectOption = [
-      {value:1, selectName:'普通'},
-      {value:2, selectName:'重要'},
-      {value:3, selectName:'緊急'},
+      { value: 1, selectName: "普通" },
+      { value: 2, selectName: "重要" },
+      { value: 3, selectName: "緊急" },
     ];
 
     const multipleSelectOption = [
-      {value:1, selectName:'Red'},
-      {value:2, selectName:'Green'},
-      {value:3, selectName:'Blue'},
+      { value: 1, selectName: "Red" },
+      { value: 2, selectName: "Green" },
+      { value: 3, selectName: "Blue" },
     ];
 
     const radioOption = [
-      {value:1, selectName:'普通'},
-      {value:2, selectName:'重要'},
-      {value:3, selectName:'緊急'},
+      { value: 1, selectName: "普通" },
+      { value: 2, selectName: "重要" },
+      { value: 3, selectName: "緊急" },
     ];
 
     const layout = {
@@ -138,20 +129,24 @@ export default class MyForm extends Component {
           <Form.Item label="事件名稱">
             <Input
               value={this.state.inputTextValue}
-              onChange={e=>{
-                this.handleChange(e.target.value,'inputTextValue');
+              onChange={(e) => {
+                this.handleChange(e.target.value, "inputTextValue");
               }}
             />
           </Form.Item>
           <Form.Item label="緊急程度">
             <Select
               value={this.state.selectValue}
-              onChange={val=>{
-                this.handleChange(val,'selectValue');
+              onChange={(val) => {
+                this.handleChange(val, "selectValue");
               }}
             >
-              {selectOption.map((val)=>{
-                return <Select.Option value={val.value}>{val.selectName}</Select.Option>;
+              {selectOption.map((val) => {
+                return (
+                  <Select.Option value={val.value} key={val.value}>
+                    {val.selectName}
+                  </Select.Option>
+                );
               })}
             </Select>
           </Form.Item>
@@ -171,25 +166,33 @@ export default class MyForm extends Component {
               mode="multiple"
               placeholder="Please select favourite colors"
               value={this.state.multipleSelectValue}
-              onChange={val=>{
-                this.handleChange(val,'multipleSelectValue');
+              onChange={(val) => {
+                this.handleChange(val, "multipleSelectValue");
               }}
             >
-              {multipleSelectOption.map((val)=>{
-                return <Select.Option value={val.value}>{val.selectName}</Select.Option>;
+              {multipleSelectOption.map((val) => {
+                return (
+                  <Select.Option value={val.value} key={val.value}>
+                    {val.selectName}
+                  </Select.Option>
+                );
               })}
             </Select>
           </Form.Item>
 
           <Form.Item label="緊急程度2">
             <Radio.Group
-              onChange={e=>{
-                this.handleChange(e.target.value, 'radioValue');
+              onChange={(e) => {
+                this.handleChange(e.target.value, "radioValue");
               }}
               value={this.state.radioValue}
             >
-              {radioOption.map((val)=>{
-                return <Radio value={val.value}>{val.selectName}</Radio>;
+              {radioOption.map((val) => {
+                return (
+                  <Radio value={val.value} key={val.value}>
+                    {val.selectName}
+                  </Radio>
+                );
               })}
             </Radio.Group>
           </Form.Item>
@@ -198,15 +201,15 @@ export default class MyForm extends Component {
               value={moment(this.state.datePickerString, "YYYY-MM-DD")}
               format="YYYY-MM-DD"
               locale={locale}
-              onChange={(date,dateString)=>{
-                this.handleChange(dateString, 'datePickerString');
+              onChange={(date, dateString) => {
+                this.handleChange(dateString, "datePickerString");
               }}
             />
           </Form.Item>
           <Form.Item label="時間">
             <TimePicker
-              onChange={(time, timeString)=>{
-                this.handleChange(timeString, 'timePickerString');
+              onChange={(time, timeString) => {
+                this.handleChange(timeString, "timePickerString");
               }}
               value={moment(this.state.timePickerString, "HH:mm")}
               format="HH:mm"
@@ -215,8 +218,10 @@ export default class MyForm extends Component {
 
           <Form.Item label="是否完成">
             <Switch
-              value={this.state.switchValue}
-              onChange={val=>{this.handleChange(val, 'switchValue')}}
+              checked={this.state.switchValue}
+              onChange={(val) => {
+                this.handleChange(val, "switchValue");
+              }}
             />
           </Form.Item>
           <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>

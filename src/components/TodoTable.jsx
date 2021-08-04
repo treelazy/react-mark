@@ -6,11 +6,9 @@ export default class TodoTable extends Component {
   constructor(props) {
     super(props);
     this.props = props;
-
-    this.onEditBtnClick = this.onEditBtnClick.bind(this);
   }
 
-  onEditBtnClick(uuid){
+  onEditBtnClick = (uuid)=>{
     console.log(uuid);
   }
 
