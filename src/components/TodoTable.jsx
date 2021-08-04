@@ -1,4 +1,4 @@
-import { Button, Table } from "antd";
+import { Button, Table, Typography } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { likeMap, multipleSelectMap, priorityMap } from "../constant";
@@ -7,6 +7,7 @@ import {
   setMyFormIsEditMode,
   setEditItemUuid,
 } from "../redux/store";
+const { Title } = Typography;
 
 class TodoTable extends Component {
   constructor(props) {
@@ -22,7 +23,10 @@ class TodoTable extends Component {
 
   onDeleteBtnClick = (uuid) => {
     console.log(uuid);
-    this.props.deleteTodoListItem(uuid);
+    let yes = window.confirm("確定要刪除該筆資料嗎?");
+    if (yes) {
+      this.props.deleteTodoListItem(uuid);
+    }
   };
 
   getDataSource() {
@@ -31,7 +35,7 @@ class TodoTable extends Component {
       todoList = this.props.todoList;
     }
 
-    if (Object.keys(this.props.searchResultList).length !== 0) {
+    if (this.props.searchResultList !== null) {
       todoList = this.props.searchResultList;
     }
 
@@ -137,7 +141,12 @@ class TodoTable extends Component {
 
     return (
       <div>
-        <Table dataSource={this.getDataSource()} columns={columns} />;
+        {this.props.searchResultList !== null &&
+        Object.keys(this.props.searchResultList).length === 0 ? (
+          <Title>查無資料</Title>
+        ) : (
+          <Table dataSource={this.getDataSource()} columns={columns} />
+        )}
       </div>
     );
   }

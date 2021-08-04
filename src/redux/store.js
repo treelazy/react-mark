@@ -11,7 +11,7 @@ const CLEAR_SEARCH_RESULT_LIST = 'CLEAR_SEARCH_RESULT_LIST';
 // 初始狀態寫在Reducer 參數初始值
 const initState = {
     todoList: {},
-    searchResultList: {},
+    searchResultList: null,
     isMyFormEditMode: false,
     editItemUuid: '',
     lastActionType: null,
@@ -66,15 +66,36 @@ function dataReducer(state = initState, action) {
             let searchResult = {};
             Object.keys(state.todoList).forEach((key) => {
                 let val = state.todoList[key];
+                let isSwitchValueOK = false;
+                let isInputTextValueOK = false;
+                let isSelectValueOK = false;
+                let isRadioValueOK = false;
                 if (val.switchValue === condition.searchSwitchValue) {
+                    isSwitchValueOK = true;
+                }
+
+                if (condition.searchInputTextValue === '' || val.inputTextValue.includes(condition.searchInputTextValue)) {
+                    isInputTextValueOK = true;
+                }
+
+                if (condition.searchSelectValue === null || val.selectValue === condition.searchSelectValue) {
+                    isSelectValueOK = true;
+                }
+
+                if (condition.searchRadioValue === null || val.radioValue === condition.searchRadioValue) {
+                    isRadioValueOK = true;
+                }
+
+                if (isSwitchValueOK && isInputTextValueOK && isSelectValueOK && isRadioValueOK) {
                     searchResult[key] = val;
                 }
+
             });
 
             state.searchResultList = searchResult;
             return { ...state };
         case CLEAR_SEARCH_RESULT_LIST:
-            state.searchResultList = {};
+            state.searchResultList = null;
             return { ...state };
         default:
             return state;

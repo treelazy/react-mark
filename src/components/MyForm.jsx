@@ -67,30 +67,33 @@ class MyForm extends Component {
   };
 
   onSubmitBtnClick = () => {
-    let uuid = this.uuidv4();
+    let yes = window.confirm("確定要新增一筆資料嗎?");
+    if (yes) {
+      let uuid = this.uuidv4();
 
-    let {
-      inputTextValue,
-      selectValue,
-      multipleSelectValue,
-      radioValue,
-      datePickerString,
-      timePickerString,
-      switchValue,
-    } = this.state;
+      let {
+        inputTextValue,
+        selectValue,
+        multipleSelectValue,
+        radioValue,
+        datePickerString,
+        timePickerString,
+        switchValue,
+      } = this.state;
 
-    let todoListItem = {
-      uuid,
-      inputTextValue,
-      selectValue,
-      multipleSelectValue,
-      radioValue,
-      datePickerString,
-      timePickerString,
-      switchValue,
-    };
+      let todoListItem = {
+        uuid,
+        inputTextValue,
+        selectValue,
+        multipleSelectValue,
+        radioValue,
+        datePickerString,
+        timePickerString,
+        switchValue,
+      };
 
-    this.props.updateTodoList(todoListItem);
+      this.props.updateTodoList(todoListItem);
+    }
   };
 
   onCancelBtnClick = () => {
@@ -99,9 +102,12 @@ class MyForm extends Component {
   };
 
   onSaveBtnClick = () => {
-    this.props.updateTodoList(this.state);
-    this.props.setMyFormIsEditMode(false);
-    this.resetAllInput();
+    let yes = window.confirm("確定要修改資料嗎?");
+    if (yes) {
+      this.props.updateTodoList(this.state);
+      this.props.setMyFormIsEditMode(false);
+      this.resetAllInput();
+    }
   };
 
   resetAllInput = () => {
