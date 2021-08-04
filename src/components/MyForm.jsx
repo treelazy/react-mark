@@ -7,23 +7,28 @@ import {
   DatePicker,
   Switch,
   TimePicker,
+  Typography,
 } from "antd";
 import React, { Component } from "react";
 import moment from "moment";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import "antd/dist/antd.css";
-export default class MyForm extends Component {
+import TodoTable from "./TodoTable";
+import { updateTodoList } from "../redux/store";
+import { connect } from "react-redux";
+const { Title } = Typography;
+class MyForm extends Component {
   constructor(props) {
     super(props);
     this.props = props;
     this.state = {
       uuid: null,
       inputTextValue: "",
-      selectValue: 1,
+      selectValue: null,
       multipleSelectValue: [],
-      radioValue: 1,
-      datePickerString: "2021-01-01",
-      timePickerString: "00:00",
+      radioValue: null,
+      datePickerString: null,
+      timePickerString: null,
       switchValue: false,
     };
   }
@@ -47,27 +52,17 @@ export default class MyForm extends Component {
     this.setState({
       uuid: "",
       inputTextValue: "",
-      selectValue: 1,
+      selectValue: null,
       multipleSelectValue: [],
-      radioValue: 1,
-      datePickerString: "2021-01-01",
-      timePickerString: "00:00",
+      radioValue: null,
+      datePickerString: null,
+      timePickerString: null,
       switchValue: false,
     });
   };
 
   onSubmitBtnClick = () => {
-    let todoListString = localStorage.getItem("todoListData");
-    let todoList = null;
-    if (!todoListString) {
-      todoList = {};
-    } else {
-      todoList = JSON.parse(todoListString);
-    }
-    let uuid = this.state.uuid;
-    if (!uuid) {
-      uuid = this.uuidv4();
-    }
+    let uuid = this.uuidv4();
 
     let {
       inputTextValue,
@@ -79,9 +74,7 @@ export default class MyForm extends Component {
       switchValue,
     } = this.state;
 
-    console.log(todoList);
-
-    todoList[uuid] = {
+    let todoListItem = {
       uuid,
       inputTextValue,
       selectValue,
@@ -92,7 +85,7 @@ export default class MyForm extends Component {
       switchValue,
     };
 
-    localStorage.setItem("todoListData", JSON.stringify(todoList));
+    this.props.updateTodoList(todoListItem);
   };
 
   render() {
@@ -125,6 +118,7 @@ export default class MyForm extends Component {
 
     return (
       <div>
+        <Title>新增事項</Title>
         <Form {...layout}>
           <Form.Item label="事件名稱">
             <Input
@@ -198,7 +192,11 @@ export default class MyForm extends Component {
           </Form.Item>
           <Form.Item label="日期">
             <DatePicker
-              value={moment(this.state.datePickerString, "YYYY-MM-DD")}
+              value={
+                this.state.datePickerString
+                  ? moment(this.state.datePickerString, "YYYY-MM-DD")
+                  : null
+              }
               format="YYYY-MM-DD"
               locale={locale}
               onChange={(date, dateString) => {
@@ -211,7 +209,11 @@ export default class MyForm extends Component {
               onChange={(time, timeString) => {
                 this.handleChange(timeString, "timePickerString");
               }}
-              value={moment(this.state.timePickerString, "HH:mm")}
+              value={
+                this.state.timePickerString
+                  ? moment(this.state.timePickerString, "HH:mm")
+                  : null
+              }
               format="HH:mm"
             />
           </Form.Item>
@@ -237,7 +239,19 @@ export default class MyForm extends Component {
             </Button>
           </Form.Item>
         </Form>
+        <hr />
+        <TodoTable todoList={this.props.todoList} />
       </div>
     );
   }
 }
+
+const mapDispatchToProps = { updateTodoList };
+
+const mapStateToProps = (state) => {
+  return {
+    todoList: state.todoList,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MyForm);
