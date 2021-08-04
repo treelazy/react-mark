@@ -12,13 +12,14 @@ import {
 import React, { Component } from "react";
 import moment from "moment";
 import locale from "antd/es/date-picker/locale/zh_CN";
-import "antd/dist/antd.css";
+
 import {
   updateTodoList,
   setMyFormIsEditMode,
   setEditItemUuid,
 } from "../redux/store";
 import { connect } from "react-redux";
+import { multipleSelectOption, radioOption, selectOption } from "../constant";
 const { Title } = Typography;
 class MyForm extends Component {
   constructor(props) {
@@ -37,9 +38,6 @@ class MyForm extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log("MyForm componentDidUpdate");
-    console.log(this.props.isEditMode);
-
     // 設定為編輯模式後第一次Update
     if (
       this.props.isEditMode &&
@@ -120,24 +118,6 @@ class MyForm extends Component {
   };
 
   render() {
-    const selectOption = [
-      { value: 1, selectName: "普通" },
-      { value: 2, selectName: "重要" },
-      { value: 3, selectName: "緊急" },
-    ];
-
-    const multipleSelectOption = [
-      { value: 1, selectName: "Red" },
-      { value: 2, selectName: "Green" },
-      { value: 3, selectName: "Blue" },
-    ];
-
-    const radioOption = [
-      { value: 1, selectName: "普通" },
-      { value: 2, selectName: "重要" },
-      { value: 3, selectName: "緊急" },
-    ];
-
     const layout = {
       labelCol: {
         span: 8,
@@ -180,7 +160,6 @@ class MyForm extends Component {
               })}
             </Select>
           </Form.Item>
-
           <Form.Item
             name="select-multiple"
             label="多重選擇"
@@ -209,8 +188,7 @@ class MyForm extends Component {
               })}
             </Select>
           </Form.Item>
-
-          <Form.Item label="緊急程度2">
+          <Form.Item label="喜好">
             <Radio.Group
               onChange={(e) => {
                 this.handleChange(e.target.value, "radioValue");

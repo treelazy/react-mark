@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
 import MyForm from './components/MyForm';
 import { initTodoList } from './redux/store';
 import { connect } from 'react-redux';
 import TodoTable from './components/TodoTable';
+import SearchForm from './components/SearchForm';
 
 class App extends Component {
 
@@ -33,6 +34,8 @@ class App extends Component {
     return (
       <div>
         <MyForm />
+        <hr />
+        <SearchForm />
         <hr />
         <TodoTable />
       </div>

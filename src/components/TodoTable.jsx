@@ -1,6 +1,7 @@
 import { Button, Table } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { likeMap, multipleSelectMap, priorityMap } from "../constant";
 import {
   deleteTodoListItem,
   setMyFormIsEditMode,
@@ -20,31 +21,25 @@ class TodoTable extends Component {
   };
 
   onDeleteBtnClick = (uuid) => {
+    console.log(uuid);
     this.props.deleteTodoListItem(uuid);
   };
 
   getDataSource() {
-    let priorityMap = {
-      1: "普通",
-      2: "重要",
-      3: "緊急",
-    };
-
-    let multipleSelectMap = {
-      1: "Red",
-      2: "Green",
-      3: "Blue",
-    };
-
     let todoList = {};
     if (this.props.todoList) {
       todoList = this.props.todoList;
     }
+
+    if (Object.keys(this.props.searchResultList).length !== 0) {
+      todoList = this.props.searchResultList;
+    }
+
     let dataSource = [];
     Object.keys(todoList).forEach((key, index) => {
       let obj = { ...todoList[key] };
       obj["selectValue"] = priorityMap[obj["selectValue"]];
-      obj["radioValue"] = priorityMap[obj["radioValue"]];
+      obj["radioValue"] = likeMap[obj["radioValue"]];
       obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
       if (obj["multipleSelectValue"].length !== 0) {
         let multipleSelectStr = "";
@@ -109,7 +104,7 @@ class TodoTable extends Component {
         key: "multipleSelectValue",
       },
       {
-        title: "緊急程度2",
+        title: "喜好",
         dataIndex: "radioValue",
         key: "radioValue",
       },
@@ -157,6 +152,7 @@ const mapDispatchToProps = {
 const mapStateToProps = (state) => {
   return {
     todoList: state.todoList,
+    searchResultList: state.searchResultList,
   };
 };
 
