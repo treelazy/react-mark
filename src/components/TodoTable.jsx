@@ -24,6 +24,12 @@ class TodoTable extends Component {
       3: "緊急",
     };
 
+    let multipleSelectMap = {
+      1: "Red",
+      2: "Green",
+      3: "Blue",
+    };
+
     let todoList = {};
     if (this.props.todoList) {
       todoList = this.props.todoList;
@@ -34,6 +40,21 @@ class TodoTable extends Component {
       obj["selectValue"] = priorityMap[obj["selectValue"]];
       obj["radioValue"] = priorityMap[obj["radioValue"]];
       obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
+      if (obj["multipleSelectValue"].length !== 0) {
+        let multipleSelectStr = "";
+        for (let i = 1; i <= 3; i++) {
+          if (obj["multipleSelectValue"].includes(i)) {
+            if (!multipleSelectStr) {
+              multipleSelectStr += multipleSelectMap[i];
+            } else {
+              multipleSelectStr += `, ${multipleSelectMap[i]}`;
+            }
+          }
+        }
+        obj["multipleSelectValue"] = multipleSelectStr;
+      } else {
+        obj["multipleSelectValue"] = "";
+      }
       obj["key"] = index;
       obj["edit"] = (
         <Button
