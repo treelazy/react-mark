@@ -1,7 +1,11 @@
 import { Button, Table } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { deleteTodoListItem } from "../redux/store";
+import {
+  deleteTodoListItem,
+  setMyFormIsEditMode,
+  setEditItemUuid,
+} from "../redux/store";
 
 class TodoTable extends Component {
   constructor(props) {
@@ -11,6 +15,8 @@ class TodoTable extends Component {
 
   onEditBtnClick = (uuid) => {
     console.log(uuid);
+    this.props.setMyFormIsEditMode(true);
+    this.props.setEditItemUuid(uuid);
   };
 
   onDeleteBtnClick = (uuid) => {
@@ -42,15 +48,14 @@ class TodoTable extends Component {
       obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
       if (obj["multipleSelectValue"].length !== 0) {
         let multipleSelectStr = "";
-        for (let i = 1; i <= 3; i++) {
-          if (obj["multipleSelectValue"].includes(i)) {
-            if (!multipleSelectStr) {
-              multipleSelectStr += multipleSelectMap[i];
-            } else {
-              multipleSelectStr += `, ${multipleSelectMap[i]}`;
-            }
+        obj["multipleSelectValue"].forEach((val) => {
+          if (!multipleSelectStr) {
+            multipleSelectStr += multipleSelectMap[val];
+          } else {
+            multipleSelectStr += `, ${multipleSelectMap[val]}`;
           }
-        }
+        });
+
         obj["multipleSelectValue"] = multipleSelectStr;
       } else {
         obj["multipleSelectValue"] = "";
@@ -79,7 +84,7 @@ class TodoTable extends Component {
           Delete
         </Button>
       );
-      dataSource.push(obj);
+      dataSource[index] = obj;
     });
     return dataSource;
   }
@@ -143,6 +148,16 @@ class TodoTable extends Component {
   }
 }
 
-const mapDispatchToProps = { deleteTodoListItem };
+const mapDispatchToProps = {
+  deleteTodoListItem,
+  setMyFormIsEditMode,
+  setEditItemUuid,
+};
 
-export default connect(null, mapDispatchToProps)(TodoTable);
+const mapStateToProps = (state) => {
+  return {
+    todoList: state.todoList,
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(TodoTable);

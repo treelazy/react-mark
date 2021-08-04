@@ -13,8 +13,11 @@ import React, { Component } from "react";
 import moment from "moment";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import "antd/dist/antd.css";
-import TodoTable from "./TodoTable";
-import { updateTodoList } from "../redux/store";
+import {
+  updateTodoList,
+  setMyFormIsEditMode,
+  setEditItemUuid,
+} from "../redux/store";
 import { connect } from "react-redux";
 const { Title } = Typography;
 class MyForm extends Component {
@@ -33,6 +36,19 @@ class MyForm extends Component {
     };
   }
 
+  componentDidUpdate(prevProps) {
+    console.log("MyForm componentDidUpdate");
+    console.log(this.props.isEditMode);
+
+    // 設定為編輯模式後第一次Update
+    if (
+      this.props.isEditMode &&
+      prevProps.editItemUuid !== this.props.editItemUuid
+    ) {
+      this.setState(this.props.todoList[this.props.editItemUuid]);
+    }
+  }
+
   uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
@@ -49,16 +65,7 @@ class MyForm extends Component {
   };
 
   onResetBtnClick = () => {
-    this.setState({
-      uuid: "",
-      inputTextValue: "",
-      selectValue: null,
-      multipleSelectValue: [],
-      radioValue: null,
-      datePickerString: null,
-      timePickerString: null,
-      switchValue: false,
-    });
+    this.resetAllInput();
   };
 
   onSubmitBtnClick = () => {
@@ -86,6 +93,30 @@ class MyForm extends Component {
     };
 
     this.props.updateTodoList(todoListItem);
+  };
+
+  onCancelBtnClick = () => {
+    this.props.setMyFormIsEditMode(false);
+    this.resetAllInput();
+  };
+
+  onSaveBtnClick = () => {
+    this.props.updateTodoList(this.state);
+    this.props.setMyFormIsEditMode(false);
+    this.resetAllInput();
+  };
+
+  resetAllInput = () => {
+    this.setState({
+      uuid: "",
+      inputTextValue: "",
+      selectValue: null,
+      multipleSelectValue: [],
+      radioValue: null,
+      datePickerString: null,
+      timePickerString: null,
+      switchValue: false,
+    });
   };
 
   render() {
@@ -118,7 +149,12 @@ class MyForm extends Component {
 
     return (
       <div>
-        <Title>新增事項</Title>
+        {this.props.isEditMode ? (
+          <Title>編輯事項</Title>
+        ) : (
+          <Title>新增事項</Title>
+        )}
+
         <Form {...layout}>
           <Form.Item label="事件名稱">
             <Input
@@ -226,31 +262,54 @@ class MyForm extends Component {
               }}
             />
           </Form.Item>
-          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-            <Button
-              type="primary"
-              htmlType="button"
-              onClick={this.onSubmitBtnClick}
-            >
-              Submit
-            </Button>
-            <Button htmlType="button" onClick={this.onResetBtnClick}>
-              Reset
-            </Button>
-          </Form.Item>
+          {this.props.isEditMode ? (
+            <div>
+              <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  onClick={this.onSaveBtnClick}
+                >
+                  Save
+                </Button>
+                <Button htmlType="button" onClick={this.onCancelBtnClick}>
+                  Cancel
+                </Button>
+              </Form.Item>
+            </div>
+          ) : (
+            <div>
+              <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                <Button
+                  type="primary"
+                  htmlType="button"
+                  onClick={this.onSubmitBtnClick}
+                >
+                  Submit
+                </Button>
+                <Button htmlType="button" onClick={this.onResetBtnClick}>
+                  Reset
+                </Button>
+              </Form.Item>
+            </div>
+          )}
         </Form>
-        <hr />
-        <TodoTable todoList={this.props.todoList} />
       </div>
     );
   }
 }
 
-const mapDispatchToProps = { updateTodoList };
+const mapDispatchToProps = {
+  updateTodoList,
+  setMyFormIsEditMode,
+  setEditItemUuid,
+};
 
 const mapStateToProps = (state) => {
   return {
     todoList: state.todoList,
+    isEditMode: state.isMyFormEditMode,
+    editItemUuid: state.editItemUuid,
   };
 };
 

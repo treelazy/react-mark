@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import MyForm from './components/MyForm';
 import { initTodoList } from './redux/store';
 import { connect } from 'react-redux';
+import TodoTable from './components/TodoTable';
 
 class App extends Component {
 
@@ -32,6 +33,8 @@ class App extends Component {
     return (
       <div>
         <MyForm />
+        <hr />
+        <TodoTable />
       </div>
     )
   }
