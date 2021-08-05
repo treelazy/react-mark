@@ -15,7 +15,6 @@ import locale from "antd/es/date-picker/locale/zh_CN";
 
 import {
   updateTodoList,
-  setMyFormIsEditMode,
   setEditItemUuid,
   resetEditFormTrigger,
   resetAddFormTrigger,
@@ -39,6 +38,7 @@ class MyForm extends Component {
       confirmModalVisibleFlag: false,
       formModalVisible: false,
       formOKText: "",
+      isEditMode: false,
     };
     this.handleConfirmModalOk = null;
     this.onFormModelOKCB = null;
@@ -48,7 +48,7 @@ class MyForm extends Component {
     //Edit
     if (!prevProps.showEditFormTrigger && this.props.showEditFormTrigger) {
       this.props.resetEditFormTrigger();
-      this.props.setMyFormIsEditMode(true);
+      this.setState({ isEditMode: true });
       // 將所有資料都直接投射到state
       this.setState(this.props.todoList[this.props.editItemUuid]);
       this.setState({ formModalVisible: true });
@@ -59,7 +59,8 @@ class MyForm extends Component {
     //Add
     if (!prevProps.showAddFormTrigger && this.props.showAddFormTrigger) {
       this.props.resetAddFormTrigger();
-      this.props.setMyFormIsEditMode(false);
+      this.setState({ isEditMode: false });
+      this.props.setEditItemUuid("");
       this.resetAllInput();
       this.setState({ formModalVisible: true });
       this.setState({ formOKText: "Add" });
@@ -120,7 +121,6 @@ class MyForm extends Component {
     console.log("onSaveBtnClick");
     this.showConfirmModal("確定要修改資料嗎?", () => {
       this.props.updateTodoList(this.state);
-      this.props.setMyFormIsEditMode(false);
       this.resetAllInput();
       this.hideMyForm();
     });
@@ -168,7 +168,7 @@ class MyForm extends Component {
 
     return (
       <Modal
-        title={this.props.isEditMode ? "編輯事項" : "新增事項"}
+        title={this.state.isEditMode ? "編輯事項" : "新增事項"}
         visible={this.state.formModalVisible}
         okText={this.state.formOKText}
         onOk={() => {
@@ -286,7 +286,7 @@ class MyForm extends Component {
                 }}
               />
             </Form.Item>
-            {this.props.isEditMode ? null : (
+            {this.state.isEditMode ? null : (
               <div>
                 <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                   <Button htmlType="button" onClick={this.onResetBtnClick}>
@@ -318,7 +318,6 @@ class MyForm extends Component {
 
 const mapDispatchToProps = {
   updateTodoList,
-  setMyFormIsEditMode,
   setEditItemUuid,
   resetEditFormTrigger,
   resetAddFormTrigger,

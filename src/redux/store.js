@@ -3,7 +3,6 @@ import { createStore } from 'redux'
 const TODOLIST_INIT = 'TODOLIST_INIT';
 const TODOLIST_UPDATE = 'TODOLIST_UPDATE';
 const TODOLIST_DELETE_ITEM = 'TODOLIST_DELETE_ITEM';
-const SET_EDIT_MODE = 'SET_EDIT_MODE';
 const SET_EDIT_ITEM_UUID = 'SET_EDIT_ITEM_UUID';
 const SEARCH_BY_CONDITION = 'SEARCH_BY_CONDITION';
 const CLEAR_SEARCH_RESULT_LIST = 'CLEAR_SEARCH_RESULT_LIST';
@@ -17,7 +16,6 @@ const RESET_EDIT_FORM_TRIGGER = 'RESET_EDIT_FORM_TRIGGER';
 const initState = {
     todoList: {},
     searchResultList: null,
-    isMyFormEditMode: false,
     editItemUuid: '',
     lastActionType: null,
     showAddFormTrigger: false,
@@ -30,8 +28,7 @@ function dataReducer(state = initState, action) {
         case TODOLIST_INIT:
             state.todoList = action.payload;
             state.todoList = { ...state.todoList };
-            return { ...state }
-        //return Object.assign({}, state)
+            return { ...state };
         case TODOLIST_UPDATE:
             // 回傳時要創造一個新的object 不能直接修改原本的值後回傳
             let { uuid } = action.payload
@@ -45,7 +42,6 @@ function dataReducer(state = initState, action) {
             }
 
             return { ...state };
-        //return Object.assign({}, state)
         case TODOLIST_DELETE_ITEM:
             let deleteID = action.payload;
             delete state.todoList[deleteID];
@@ -57,13 +53,6 @@ function dataReducer(state = initState, action) {
                 state.searchResultList = { ...state.searchResultList };
             }
 
-            return { ...state };
-        //return Object.assign({}, state)
-        case SET_EDIT_MODE:
-            state.isMyFormEditMode = action.payload;
-            if (action.payload === false) {
-                state.editItemUuid = '';
-            }
             return { ...state };
         case SET_EDIT_ITEM_UUID:
             state.editItemUuid = action.payload;
@@ -144,7 +133,6 @@ store.subscribe(() => {
 export const initTodoList = (data) => ({ type: TODOLIST_INIT, payload: data });
 export const updateTodoList = (data) => ({ type: TODOLIST_UPDATE, payload: data });
 export const deleteTodoListItem = (id) => ({ type: TODOLIST_DELETE_ITEM, payload: id });
-export const setMyFormIsEditMode = (b) => ({ type: SET_EDIT_MODE, payload: b });
 export const setEditItemUuid = (uuid) => ({ type: SET_EDIT_ITEM_UUID, payload: uuid });
 export const searchByCondition = (condition) => ({ type: SEARCH_BY_CONDITION, payload: condition });
 export const clearSearchResultList = () => ({ type: CLEAR_SEARCH_RESULT_LIST });
