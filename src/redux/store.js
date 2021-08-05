@@ -32,7 +32,7 @@ function dataReducer(state = initState, action) {
             state.todoList = { ...state.todoList };
 
             // 如果搜尋結果中存在,一併更新
-            if (state.searchResultList[uuid]) {
+            if (state.searchResultList && state.searchResultList[uuid]) {
                 state.searchResultList[uuid] = action.payload;
                 state.searchResultList = { ...state.searchResultList };
             }
@@ -45,7 +45,7 @@ function dataReducer(state = initState, action) {
             state.todoList = { ...state.todoList };
 
             // 如果搜尋結果中存在,一併刪除
-            if (state.searchResultList[deleteID]) {
+            if (state.searchResultList && state.searchResultList[deleteID]) {
                 delete state.searchResultList[deleteID];
                 state.searchResultList = { ...state.searchResultList };
             }
