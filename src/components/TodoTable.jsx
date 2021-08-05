@@ -1,4 +1,4 @@
-import { Button, Table, Typography } from "antd";
+import { Button, Table, Typography, Modal } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { likeMap, multipleSelectMap, priorityMap } from "../constant";
@@ -13,7 +13,11 @@ class TodoTable extends Component {
   constructor(props) {
     super(props);
     this.props = props;
-    this.state = { title: "全部資料" };
+    this.state = {
+      title: "全部資料",
+      modalText: "",
+      modalVisible: false,
+    };
   }
 
   componentDidUpdate(prevProps) {
@@ -38,10 +42,9 @@ class TodoTable extends Component {
 
   onDeleteBtnClick = (uuid) => {
     console.log(uuid);
-    let yes = window.confirm("確定要刪除該筆資料嗎?");
-    if (yes) {
+    this.showModal("確定要刪除該筆資料嗎?", () => {
       this.props.deleteTodoListItem(uuid);
-    }
+    });
   };
 
   getDataSource() {
@@ -101,6 +104,19 @@ class TodoTable extends Component {
     return dataSource;
   }
 
+  handleModalCancel = () => {
+    console.log("Clicked cancel button");
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  showModal = (modalText, modalOKCallback) => {
+    this.setState({ modalVisible: true });
+    this.setState({ modalText });
+    this.handleModalOk = modalOKCallback;
+  };
+
   render() {
     console.log("table render");
 
@@ -156,6 +172,19 @@ class TodoTable extends Component {
       <div>
         <Title>{this.state.title}</Title>
         <Table dataSource={this.getDataSource()} columns={columns} />
+        <Modal
+          title="Confirm"
+          visible={this.state.modalVisible}
+          onOk={() => {
+            if (this.handleModalOk) {
+              this.setState({ modalVisible: false });
+              this.handleModalOk();
+            }
+          }}
+          onCancel={this.handleModalCancel}
+        >
+          <p>{this.state.modalText}</p>
+        </Modal>
       </div>
     );
   }

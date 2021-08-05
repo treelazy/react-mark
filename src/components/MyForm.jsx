@@ -8,6 +8,7 @@ import {
   Switch,
   TimePicker,
   Typography,
+  Modal,
 } from "antd";
 import React, { Component } from "react";
 import moment from "moment";
@@ -34,7 +35,10 @@ class MyForm extends Component {
       datePickerString: null,
       timePickerString: null,
       switchValue: false,
+      modalText: "",
+      modalVisible: false,
     };
+    this.handleModalOk = null;
   }
 
   componentDidUpdate(prevProps) {
@@ -67,8 +71,7 @@ class MyForm extends Component {
   };
 
   onSubmitBtnClick = () => {
-    let yes = window.confirm("確定要新增一筆資料嗎?");
-    if (yes) {
+    this.showModal("確定要新增一筆資料嗎?", () => {
       let uuid = this.uuidv4();
 
       let {
@@ -93,7 +96,7 @@ class MyForm extends Component {
       };
 
       this.props.updateTodoList(todoListItem);
-    }
+    });
   };
 
   onCancelBtnClick = () => {
@@ -102,12 +105,11 @@ class MyForm extends Component {
   };
 
   onSaveBtnClick = () => {
-    let yes = window.confirm("確定要修改資料嗎?");
-    if (yes) {
+    this.showModal("確定要修改資料嗎?", () => {
       this.props.updateTodoList(this.state);
       this.props.setMyFormIsEditMode(false);
       this.resetAllInput();
-    }
+    });
   };
 
   resetAllInput = () => {
@@ -121,6 +123,19 @@ class MyForm extends Component {
       timePickerString: null,
       switchValue: false,
     });
+  };
+
+  handleModalCancel = () => {
+    console.log("Clicked cancel button");
+    this.setState({
+      modalVisible: false,
+    });
+  };
+
+  showModal = (modalText, modalOKCallback) => {
+    this.setState({ modalVisible: true });
+    this.setState({ modalText });
+    this.handleModalOk = modalOKCallback;
   };
 
   render() {
@@ -278,6 +293,20 @@ class MyForm extends Component {
             </div>
           )}
         </Form>
+
+        <Modal
+          title="Confirm"
+          visible={this.state.modalVisible}
+          onOk={() => {
+            if (this.handleModalOk) {
+              this.setState({ modalVisible: false });
+              this.handleModalOk();
+            }
+          }}
+          onCancel={this.handleModalCancel}
+        >
+          <p>{this.state.modalText}</p>
+        </Modal>
       </div>
     );
   }
