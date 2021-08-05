@@ -117,7 +117,7 @@ const store = createStore(
 
 store.subscribe(() => {
 
-    console.log(store.getState());
+    // console.log(store.getState());
 
     switch (store.getState().lastActionType) {
         case TODOLIST_UPDATE:
