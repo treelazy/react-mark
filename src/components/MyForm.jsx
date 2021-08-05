@@ -36,7 +36,7 @@ class MyForm extends Component {
       timePickerString: null,
       switchValue: false,
       confirmModalText: "",
-      confirmModalVisible: false,
+      confirmModalVisibleFlag: false,
       formModalVisible: false,
       formOKText: "",
     };
@@ -142,12 +142,12 @@ class MyForm extends Component {
   handleConfirmModalCancel = () => {
     console.log("Clicked cancel button");
     this.setState({
-      confirmModalVisible: false,
+      confirmModalVisibleFlag: false,
     });
   };
 
   showConfirmModal = (confirmModalText, modalOKCallback) => {
-    this.setState({ confirmModalVisible: true });
+    this.setState({ confirmModalVisibleFlag: true });
     this.setState({ confirmModalText });
     this.handleConfirmModalOk = modalOKCallback;
   };
@@ -299,10 +299,10 @@ class MyForm extends Component {
 
           <Modal
             title="Confirm"
-            visible={this.state.confirmModalVisible}
+            visible={this.state.confirmModalVisibleFlag}
             onOk={() => {
               if (this.handleConfirmModalOk) {
-                this.setState({ confirmModalVisible: false });
+                this.setState({ confirmModalVisibleFlag: false });
                 this.handleConfirmModalOk();
               }
             }}

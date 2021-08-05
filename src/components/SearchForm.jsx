@@ -115,9 +115,11 @@ class SearchForm extends Component {
               >
                 Search
               </Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <Button htmlType="button" onClick={this.onResetBtnClick}>
                 Reset
               </Button>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               <Button
                 htmlType="button"
                 type="primary"
