@@ -7,6 +7,11 @@ const SET_EDIT_MODE = 'SET_EDIT_MODE';
 const SET_EDIT_ITEM_UUID = 'SET_EDIT_ITEM_UUID';
 const SEARCH_BY_CONDITION = 'SEARCH_BY_CONDITION';
 const CLEAR_SEARCH_RESULT_LIST = 'CLEAR_SEARCH_RESULT_LIST';
+const SHOW_ADD_FORM = 'SHOW_ADD_FORM';
+const RESET_ADD_FORM_TRIGGER = 'RESET_ADD_FORM_TRIGGER';
+const SHOW_EDIT_FORM = 'SHOW_EDIT_FORM';
+const RESET_EDIT_FORM_TRIGGER = 'RESET_EDIT_FORM_TRIGGER';
+
 
 // 初始狀態寫在Reducer 參數初始值
 const initState = {
@@ -15,6 +20,8 @@ const initState = {
     isMyFormEditMode: false,
     editItemUuid: '',
     lastActionType: null,
+    showAddFormTrigger: false,
+    showEditFormTrigger: false,
 }
 
 function dataReducer(state = initState, action) {
@@ -97,6 +104,18 @@ function dataReducer(state = initState, action) {
         case CLEAR_SEARCH_RESULT_LIST:
             state.searchResultList = null;
             return { ...state };
+        case SHOW_ADD_FORM:
+            state.showAddFormTrigger = true;
+            return { ...state };
+        case SHOW_EDIT_FORM:
+            state.showEditFormTrigger = true;
+            return { ...state };
+        case RESET_ADD_FORM_TRIGGER:
+            state.showAddFormTrigger = false;
+            return { ...state };
+        case RESET_EDIT_FORM_TRIGGER:
+            state.showEditFormTrigger = false;
+            return { ...state };
         default:
             return state;
     }
@@ -129,5 +148,10 @@ export const setMyFormIsEditMode = (b) => ({ type: SET_EDIT_MODE, payload: b });
 export const setEditItemUuid = (uuid) => ({ type: SET_EDIT_ITEM_UUID, payload: uuid });
 export const searchByCondition = (condition) => ({ type: SEARCH_BY_CONDITION, payload: condition });
 export const clearSearchResultList = () => ({ type: CLEAR_SEARCH_RESULT_LIST });
+export const showAddForm = () => ({ type: SHOW_ADD_FORM });
+export const showEditForm = () => ({ type: SHOW_EDIT_FORM });
+export const resetAddFormTrigger = () => ({ type: RESET_ADD_FORM_TRIGGER });
+export const resetEditFormTrigger = () => ({ type: RESET_EDIT_FORM_TRIGGER });
+
 
 export default store;

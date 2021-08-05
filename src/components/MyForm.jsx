@@ -7,7 +7,6 @@ import {
   DatePicker,
   Switch,
   TimePicker,
-  Typography,
   Modal,
 } from "antd";
 import React, { Component } from "react";
@@ -18,10 +17,11 @@ import {
   updateTodoList,
   setMyFormIsEditMode,
   setEditItemUuid,
+  resetEditFormTrigger,
+  resetAddFormTrigger,
 } from "../redux/store";
 import { connect } from "react-redux";
 import { multipleSelectOption, radioOption, selectOption } from "../constant";
-const { Title } = Typography;
 class MyForm extends Component {
   constructor(props) {
     super(props);
@@ -35,19 +35,35 @@ class MyForm extends Component {
       datePickerString: null,
       timePickerString: null,
       switchValue: false,
-      modalText: "",
-      modalVisible: false,
+      confirmModalText: "",
+      confirmModalVisible: false,
+      formModalVisible: false,
+      formOKText: "",
     };
-    this.handleModalOk = null;
+    this.handleConfirmModalOk = null;
+    this.onFormModelOKCB = null;
   }
 
   componentDidUpdate(prevProps) {
-    // 設定為編輯模式後第一次Update
-    if (
-      this.props.isEditMode &&
-      prevProps.editItemUuid !== this.props.editItemUuid
-    ) {
+    //Edit
+    if (!prevProps.showEditFormTrigger && this.props.showEditFormTrigger) {
+      this.props.resetEditFormTrigger();
+      this.props.setMyFormIsEditMode(true);
+      // 將所有資料都直接投射到state
       this.setState(this.props.todoList[this.props.editItemUuid]);
+      this.setState({ formModalVisible: true });
+      this.setState({ formOKText: "Save" });
+      this.onFormModelOKCB = this.onSaveBtnClick;
+    }
+
+    //Add
+    if (!prevProps.showAddFormTrigger && this.props.showAddFormTrigger) {
+      this.props.resetAddFormTrigger();
+      this.props.setMyFormIsEditMode(false);
+      this.resetAllInput();
+      this.setState({ formModalVisible: true });
+      this.setState({ formOKText: "Add" });
+      this.onFormModelOKCB = this.onSubmitBtnClick;
     }
   }
 
@@ -71,7 +87,7 @@ class MyForm extends Component {
   };
 
   onSubmitBtnClick = () => {
-    this.showModal("確定要新增一筆資料嗎?", () => {
+    this.showConfirmModal("確定要新增一筆資料嗎?", () => {
       let uuid = this.uuidv4();
 
       let {
@@ -96,19 +112,17 @@ class MyForm extends Component {
       };
 
       this.props.updateTodoList(todoListItem);
+      this.hideMyForm();
     });
   };
 
-  onCancelBtnClick = () => {
-    this.props.setMyFormIsEditMode(false);
-    this.resetAllInput();
-  };
-
   onSaveBtnClick = () => {
-    this.showModal("確定要修改資料嗎?", () => {
+    console.log("onSaveBtnClick");
+    this.showConfirmModal("確定要修改資料嗎?", () => {
       this.props.updateTodoList(this.state);
       this.props.setMyFormIsEditMode(false);
       this.resetAllInput();
+      this.hideMyForm();
     });
   };
 
@@ -125,18 +139,22 @@ class MyForm extends Component {
     });
   };
 
-  handleModalCancel = () => {
+  handleConfirmModalCancel = () => {
     console.log("Clicked cancel button");
     this.setState({
-      modalVisible: false,
+      confirmModalVisible: false,
     });
   };
 
-  showModal = (modalText, modalOKCallback) => {
-    this.setState({ modalVisible: true });
-    this.setState({ modalText });
-    this.handleModalOk = modalOKCallback;
+  showConfirmModal = (confirmModalText, modalOKCallback) => {
+    this.setState({ confirmModalVisible: true });
+    this.setState({ confirmModalText });
+    this.handleConfirmModalOk = modalOKCallback;
   };
+
+  hideMyForm() {
+    this.setState({ formModalVisible: false });
+  }
 
   render() {
     const layout = {
@@ -149,165 +167,151 @@ class MyForm extends Component {
     };
 
     return (
-      <div>
-        {this.props.isEditMode ? (
-          <Title>編輯事項</Title>
-        ) : (
-          <Title>新增事項</Title>
-        )}
-
-        <Form {...layout}>
-          <Form.Item label="事件名稱">
-            <Input
-              value={this.state.inputTextValue}
-              onChange={(e) => {
-                this.handleChange(e.target.value, "inputTextValue");
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="緊急程度">
-            <Select
-              value={this.state.selectValue}
-              onChange={(val) => {
-                this.handleChange(val, "selectValue");
-              }}
+      <Modal
+        title={this.props.isEditMode ? "編輯事項" : "新增事項"}
+        visible={this.state.formModalVisible}
+        okText={this.state.formOKText}
+        onOk={() => {
+          if (this.onFormModelOKCB) {
+            this.onFormModelOKCB();
+          }
+        }}
+        onCancel={() => {
+          this.hideMyForm();
+        }}
+      >
+        <div>
+          <Form {...layout}>
+            <Form.Item label="事件名稱">
+              <Input
+                value={this.state.inputTextValue}
+                onChange={(e) => {
+                  this.handleChange(e.target.value, "inputTextValue");
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="緊急程度">
+              <Select
+                value={this.state.selectValue}
+                onChange={(val) => {
+                  this.handleChange(val, "selectValue");
+                }}
+              >
+                {selectOption.map((val) => {
+                  return (
+                    <Select.Option value={val.value} key={val.value}>
+                      {val.selectName}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item
+              name="select-multiple"
+              label="多重選擇"
+              rules={[
+                {
+                  required: true,
+                  message: "Please select your favourite colors!",
+                  type: "array",
+                },
+              ]}
             >
-              {selectOption.map((val) => {
-                return (
-                  <Select.Option value={val.value} key={val.value}>
-                    {val.selectName}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item
-            name="select-multiple"
-            label="多重選擇"
-            rules={[
-              {
-                required: true,
-                message: "Please select your favourite colors!",
-                type: "array",
-              },
-            ]}
+              <Select
+                mode="multiple"
+                placeholder="Please select favourite colors"
+                value={this.state.multipleSelectValue}
+                onChange={(val) => {
+                  this.handleChange(val, "multipleSelectValue");
+                }}
+              >
+                {multipleSelectOption.map((val) => {
+                  return (
+                    <Select.Option value={val.value} key={val.value}>
+                      {val.selectName}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            </Form.Item>
+            <Form.Item label="喜好">
+              <Radio.Group
+                onChange={(e) => {
+                  this.handleChange(e.target.value, "radioValue");
+                }}
+                value={this.state.radioValue}
+              >
+                {radioOption.map((val) => {
+                  return (
+                    <Radio value={val.value} key={val.value}>
+                      {val.selectName}
+                    </Radio>
+                  );
+                })}
+              </Radio.Group>
+            </Form.Item>
+            <Form.Item label="日期">
+              <DatePicker
+                value={
+                  this.state.datePickerString
+                    ? moment(this.state.datePickerString, "YYYY-MM-DD")
+                    : null
+                }
+                format="YYYY-MM-DD"
+                locale={locale}
+                onChange={(date, dateString) => {
+                  this.handleChange(dateString, "datePickerString");
+                }}
+              />
+            </Form.Item>
+            <Form.Item label="時間">
+              <TimePicker
+                onChange={(time, timeString) => {
+                  this.handleChange(timeString, "timePickerString");
+                }}
+                value={
+                  this.state.timePickerString
+                    ? moment(this.state.timePickerString, "HH:mm")
+                    : null
+                }
+                format="HH:mm"
+              />
+            </Form.Item>
+
+            <Form.Item label="是否完成">
+              <Switch
+                checked={this.state.switchValue}
+                onChange={(val) => {
+                  this.handleChange(val, "switchValue");
+                }}
+              />
+            </Form.Item>
+            {this.props.isEditMode ? null : (
+              <div>
+                <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
+                  <Button htmlType="button" onClick={this.onResetBtnClick}>
+                    Reset
+                  </Button>
+                </Form.Item>
+              </div>
+            )}
+          </Form>
+
+          <Modal
+            title="Confirm"
+            visible={this.state.confirmModalVisible}
+            onOk={() => {
+              if (this.handleConfirmModalOk) {
+                this.setState({ confirmModalVisible: false });
+                this.handleConfirmModalOk();
+              }
+            }}
+            onCancel={this.handleConfirmModalCancel}
           >
-            <Select
-              mode="multiple"
-              placeholder="Please select favourite colors"
-              value={this.state.multipleSelectValue}
-              onChange={(val) => {
-                this.handleChange(val, "multipleSelectValue");
-              }}
-            >
-              {multipleSelectOption.map((val) => {
-                return (
-                  <Select.Option value={val.value} key={val.value}>
-                    {val.selectName}
-                  </Select.Option>
-                );
-              })}
-            </Select>
-          </Form.Item>
-          <Form.Item label="喜好">
-            <Radio.Group
-              onChange={(e) => {
-                this.handleChange(e.target.value, "radioValue");
-              }}
-              value={this.state.radioValue}
-            >
-              {radioOption.map((val) => {
-                return (
-                  <Radio value={val.value} key={val.value}>
-                    {val.selectName}
-                  </Radio>
-                );
-              })}
-            </Radio.Group>
-          </Form.Item>
-          <Form.Item label="日期">
-            <DatePicker
-              value={
-                this.state.datePickerString
-                  ? moment(this.state.datePickerString, "YYYY-MM-DD")
-                  : null
-              }
-              format="YYYY-MM-DD"
-              locale={locale}
-              onChange={(date, dateString) => {
-                this.handleChange(dateString, "datePickerString");
-              }}
-            />
-          </Form.Item>
-          <Form.Item label="時間">
-            <TimePicker
-              onChange={(time, timeString) => {
-                this.handleChange(timeString, "timePickerString");
-              }}
-              value={
-                this.state.timePickerString
-                  ? moment(this.state.timePickerString, "HH:mm")
-                  : null
-              }
-              format="HH:mm"
-            />
-          </Form.Item>
-
-          <Form.Item label="是否完成">
-            <Switch
-              checked={this.state.switchValue}
-              onChange={(val) => {
-                this.handleChange(val, "switchValue");
-              }}
-            />
-          </Form.Item>
-          {this.props.isEditMode ? (
-            <div>
-              <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  onClick={this.onSaveBtnClick}
-                >
-                  Save
-                </Button>
-                <Button htmlType="button" onClick={this.onCancelBtnClick}>
-                  Cancel
-                </Button>
-              </Form.Item>
-            </div>
-          ) : (
-            <div>
-              <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-                <Button
-                  type="primary"
-                  htmlType="button"
-                  onClick={this.onSubmitBtnClick}
-                >
-                  Submit
-                </Button>
-                <Button htmlType="button" onClick={this.onResetBtnClick}>
-                  Reset
-                </Button>
-              </Form.Item>
-            </div>
-          )}
-        </Form>
-
-        <Modal
-          title="Confirm"
-          visible={this.state.modalVisible}
-          onOk={() => {
-            if (this.handleModalOk) {
-              this.setState({ modalVisible: false });
-              this.handleModalOk();
-            }
-          }}
-          onCancel={this.handleModalCancel}
-        >
-          <p>{this.state.modalText}</p>
-        </Modal>
-      </div>
+            <p>{this.state.confirmModalText}</p>
+          </Modal>
+        </div>
+      </Modal>
     );
   }
 }
@@ -316,6 +320,8 @@ const mapDispatchToProps = {
   updateTodoList,
   setMyFormIsEditMode,
   setEditItemUuid,
+  resetEditFormTrigger,
+  resetAddFormTrigger,
 };
 
 const mapStateToProps = (state) => {
@@ -323,6 +329,8 @@ const mapStateToProps = (state) => {
     todoList: state.todoList,
     isEditMode: state.isMyFormEditMode,
     editItemUuid: state.editItemUuid,
+    showAddFormTrigger: state.showAddFormTrigger,
+    showEditFormTrigger: state.showEditFormTrigger,
   };
 };
 

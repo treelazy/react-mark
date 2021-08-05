@@ -3,7 +3,11 @@ import { Form, Input, Button, Radio, Select, Switch, Typography } from "antd";
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { radioOption, selectOption } from "../constant";
-import { searchByCondition, clearSearchResultList } from "../redux/store";
+import {
+  searchByCondition,
+  clearSearchResultList,
+  showAddForm,
+} from "../redux/store";
 const { Title } = Typography;
 class SearchForm extends Component {
   constructor(props) {
@@ -33,6 +37,10 @@ class SearchForm extends Component {
       searchRadioValue: null,
     });
     this.props.clearSearchResultList();
+  };
+
+  onAddBtnClick = () => {
+    this.props.showAddForm();
   };
 
   render() {
@@ -103,11 +111,19 @@ class SearchForm extends Component {
                 type="primary"
                 htmlType="button"
                 onClick={this.onSearchBtnClick}
+                icon="search"
               >
                 Search
               </Button>
               <Button htmlType="button" onClick={this.onResetBtnClick}>
                 Reset
+              </Button>
+              <Button
+                htmlType="button"
+                type="primary"
+                onClick={this.onAddBtnClick}
+              >
+                Add
               </Button>
             </Form.Item>
           </div>
@@ -120,6 +136,7 @@ class SearchForm extends Component {
 const mapDispatchToProps = {
   searchByCondition,
   clearSearchResultList,
+  showAddForm,
 };
 /*
 const mapStateToProps = (state) => {

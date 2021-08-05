@@ -4,8 +4,8 @@ import { connect } from "react-redux";
 import { likeMap, multipleSelectMap, priorityMap } from "../constant";
 import {
   deleteTodoListItem,
-  setMyFormIsEditMode,
   setEditItemUuid,
+  showEditForm,
 } from "../redux/store";
 const { Title } = Typography;
 
@@ -36,7 +36,7 @@ class TodoTable extends Component {
 
   onEditBtnClick = (uuid) => {
     console.log(uuid);
-    this.props.setMyFormIsEditMode(true);
+    this.props.showEditForm();
     this.props.setEditItemUuid(uuid);
   };
 
@@ -192,8 +192,8 @@ class TodoTable extends Component {
 
 const mapDispatchToProps = {
   deleteTodoListItem,
-  setMyFormIsEditMode,
   setEditItemUuid,
+  showEditForm,
 };
 
 const mapStateToProps = (state) => {
