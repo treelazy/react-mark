@@ -77,7 +77,7 @@ const SearchForm = (props) => {
     <div>
       <Title>條件搜尋</Title>
       <Form {...layout}>
-        <Form.Item label="關鍵字">
+        <Form.Item label="關鍵字" colon={false}>
           <Input
             value={searchInputTextValue}
             onChange={(e) => {
@@ -85,7 +85,7 @@ const SearchForm = (props) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="是否完成">
+        <Form.Item label="是否完成" colon={false}>
           <Switch
             checked={searchSwitchValue}
             onChange={(val) => {
@@ -93,7 +93,7 @@ const SearchForm = (props) => {
             }}
           />
         </Form.Item>
-        <Form.Item label="緊急程度">
+        <Form.Item label="緊急程度" colon={false}>
           <Select
             value={searchSelectValue}
             onChange={(val) => {
@@ -109,7 +109,7 @@ const SearchForm = (props) => {
             })}
           </Select>
         </Form.Item>
-        <Form.Item label="喜好">
+        <Form.Item label="喜好" colon={false}>
           <Radio.Group
             onChange={(e) => {
               handleChange(e.target.value, "searchRadioValue");

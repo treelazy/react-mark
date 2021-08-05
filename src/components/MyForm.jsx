@@ -209,7 +209,7 @@ const MyForm = (props) => {
     >
       <div>
         <Form {...layout}>
-          <Form.Item label="事件名稱">
+          <Form.Item label="事件名稱" colon={false}>
             <Input
               value={inputTextValue}
               onChange={(e) => {
@@ -217,7 +217,7 @@ const MyForm = (props) => {
               }}
             />
           </Form.Item>
-          <Form.Item label="緊急程度">
+          <Form.Item label="緊急程度" colon={false}>
             <Select
               value={selectValue}
               onChange={(val) => {
@@ -234,6 +234,7 @@ const MyForm = (props) => {
             </Select>
           </Form.Item>
           <Form.Item
+            colon={false}
             name="select-multiple"
             label="多重選擇"
             rules={[
@@ -261,7 +262,7 @@ const MyForm = (props) => {
               })}
             </Select>
           </Form.Item>
-          <Form.Item label="喜好">
+          <Form.Item label="喜好" colon={false}>
             <Radio.Group
               onChange={(e) => {
                 handleChange(e.target.value, "radioValue");
@@ -277,7 +278,7 @@ const MyForm = (props) => {
               })}
             </Radio.Group>
           </Form.Item>
-          <Form.Item label="日期">
+          <Form.Item label="日期" colon={false}>
             <DatePicker
               value={
                 datePickerString ? moment(datePickerString, "YYYY-MM-DD") : null
@@ -289,7 +290,7 @@ const MyForm = (props) => {
               }}
             />
           </Form.Item>
-          <Form.Item label="時間">
+          <Form.Item label="時間" colon={false}>
             <TimePicker
               onChange={(time, timeString) => {
                 handleChange(timeString, "timePickerString");
@@ -301,7 +302,7 @@ const MyForm = (props) => {
             />
           </Form.Item>
 
-          <Form.Item label="是否完成">
+          <Form.Item label="是否完成" colon={false}>
             <Switch
               checked={switchValue}
               onChange={(val) => {
