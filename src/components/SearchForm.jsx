@@ -1,4 +1,14 @@
-import { Form, Input, Button, Radio, Select, Switch, Typography } from "antd";
+import {
+  Form,
+  Input,
+  Button,
+  Radio,
+  Select,
+  Switch,
+  Typography,
+  Row,
+  Col,
+} from "antd";
 
 import React, { Component } from "react";
 import { connect } from "react-redux";
@@ -107,26 +117,38 @@ class SearchForm extends Component {
           </Form.Item>
           <div>
             <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
-              <Button
-                type="primary"
-                htmlType="button"
-                onClick={this.onSearchBtnClick}
-                icon="search"
-              >
-                Search
-              </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button htmlType="button" onClick={this.onResetBtnClick}>
-                Reset
-              </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <Button
-                htmlType="button"
-                type="primary"
-                onClick={this.onAddBtnClick}
-              >
-                Add
-              </Button>
+              <Row justify="space-around" style={{ width: "400px" }}>
+                <Col span={8}>
+                  <Button
+                    style={{ width: "100px" }}
+                    type="primary"
+                    htmlType="button"
+                    onClick={this.onSearchBtnClick}
+                    icon="search"
+                  >
+                    Search
+                  </Button>
+                </Col>
+                <Col span={8}>
+                  <Button
+                    style={{ width: "100px" }}
+                    htmlType="button"
+                    onClick={this.onResetBtnClick}
+                  >
+                    Reset
+                  </Button>
+                </Col>
+                <Col span={8}>
+                  <Button
+                    style={{ width: "100px" }}
+                    htmlType="button"
+                    type="primary"
+                    onClick={this.onAddBtnClick}
+                  >
+                    Add
+                  </Button>
+                </Col>
+              </Row>
             </Form.Item>
           </div>
         </Form>
