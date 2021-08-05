@@ -13,6 +13,21 @@ class TodoTable extends Component {
   constructor(props) {
     super(props);
     this.props = props;
+    this.state = { title: "全部資料" };
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.searchResultList !== this.props.searchResultList) {
+      if (this.props.searchResultList === null) {
+        this.setState({ title: "全部資料" });
+      } else {
+        if (Object.keys(this.props.searchResultList).length === 0) {
+          this.setState({ title: "查無資料" });
+        } else {
+          this.setState({ title: "搜尋結果" });
+        }
+      }
+    }
   }
 
   onEditBtnClick = (uuid) => {
@@ -30,18 +45,16 @@ class TodoTable extends Component {
   };
 
   getDataSource() {
-    let todoList = {};
-    if (this.props.todoList) {
-      todoList = this.props.todoList;
-    }
-
-    if (this.props.searchResultList !== null) {
-      todoList = this.props.searchResultList;
+    let tableTodoList = {};
+    if (this.props.searchResultList === null) {
+      tableTodoList = this.props.todoList;
+    } else {
+      tableTodoList = this.props.searchResultList;
     }
 
     let dataSource = [];
-    Object.keys(todoList).forEach((key, index) => {
-      let obj = { ...todoList[key] };
+    Object.keys(tableTodoList).forEach((key, index) => {
+      let obj = { ...tableTodoList[key] };
       obj["selectValue"] = priorityMap[obj["selectValue"]];
       obj["radioValue"] = likeMap[obj["radioValue"]];
       obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
@@ -141,12 +154,8 @@ class TodoTable extends Component {
 
     return (
       <div>
-        {this.props.searchResultList !== null &&
-        Object.keys(this.props.searchResultList).length === 0 ? (
-          <Title>查無資料</Title>
-        ) : (
-          <Table dataSource={this.getDataSource()} columns={columns} />
-        )}
+        <Title>{this.state.title}</Title>
+        <Table dataSource={this.getDataSource()} columns={columns} />
       </div>
     );
   }
