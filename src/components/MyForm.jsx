@@ -15,14 +15,29 @@ import locale from "antd/es/date-picker/locale/zh_CN";
 
 import {
   updateTodoList,
-  setEditItemUuid,
-  resetEditFormTrigger,
-  resetAddFormTrigger,
+  setUuidFromTable,
+  setEditFormTrigger,
+  setAddFormTrigger,
+  setViewFormTrigger,
 } from "../redux/store";
 import { connect } from "react-redux";
-import { multipleSelectOption, radioOption, selectOption } from "../constant";
+import {
+  FORM_MODE,
+  likeMap,
+  multipleSelectMap,
+  multipleSelectOption,
+  priorityMap,
+  radioOption,
+  selectOption,
+} from "../constant";
 
 const MyForm = (props) => {
+  const TITLE_TEXT = Object.freeze({
+    1: "編輯事項",
+    2: "新增事項",
+    3: "檢視事項",
+  });
+
   const [uuid, setUuid] = useState(null);
   const [inputTextValue, setInputTextValue] = useState("");
   const [selectValue, setSelectValue] = useState(null);
@@ -35,12 +50,12 @@ const MyForm = (props) => {
   const [confirmModalVisibleFlag, setConfirmModalVisibleFlag] = useState(false);
   const [formModalVisible, setFormModalVisible] = useState(false);
   const [formOKText, setFormOKText] = useState("");
-  const [isEditMode, setIsEditMode] = useState(false);
+  const [formMode, setFormMode] = useState(FORM_MODE.ADD);
 
   useEffect(() => {
     if (props.showEditFormTrigger) {
-      props.resetEditFormTrigger();
-      setIsEditMode(true);
+      props.setEditFormTrigger(false);
+      setFormMode(FORM_MODE.EDIT);
       // 將所有資料都直接投射到state
       let {
         uuid,
@@ -51,7 +66,7 @@ const MyForm = (props) => {
         datePickerString,
         timePickerString,
         switchValue,
-      } = props.todoList[props.editItemUuid];
+      } = props.todoList[props.uuidFromTable];
       setUuid(uuid);
       setInputTextValue(inputTextValue);
       setSelectValue(selectValue);
@@ -67,14 +82,41 @@ const MyForm = (props) => {
 
   useEffect(() => {
     if (props.showAddFormTrigger) {
-      props.resetAddFormTrigger();
-      setIsEditMode(false);
-      props.setEditItemUuid("");
+      props.setAddFormTrigger(false);
+      setFormMode(FORM_MODE.ADD);
+      props.setUuidFromTable("");
       resetAllInput();
       setFormModalVisible(true);
       setFormOKText("Add");
     }
   }, [props.showAddFormTrigger, props]);
+
+  useEffect(() => {
+    if (props.showViewFormTrigger) {
+      props.setViewFormTrigger(false);
+      setFormMode(FORM_MODE.VIEW);
+      let {
+        uuid,
+        inputTextValue,
+        selectValue,
+        multipleSelectValue,
+        radioValue,
+        datePickerString,
+        timePickerString,
+        switchValue,
+      } = props.todoList[props.uuidFromTable];
+      setUuid(uuid);
+      setInputTextValue(inputTextValue);
+      setSelectValue(selectValue);
+      setMultipleSelectValue(multipleSelectValue);
+      setRadioValue(radioValue);
+      setDatePickerString(datePickerString);
+      setTimePickerString(timePickerString);
+      setSwitchValue(switchValue);
+      setFormModalVisible(true);
+      setFormOKText("OK");
+    }
+  }, [props.showViewFormTrigger, props]);
 
   function uuidv4() {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
@@ -193,14 +235,21 @@ const MyForm = (props) => {
 
   return (
     <Modal
-      title={isEditMode ? "編輯事項" : "新增事項"}
+      title={TITLE_TEXT[formMode]}
       visible={formModalVisible}
       okText={formOKText}
       onOk={() => {
-        if (isEditMode) {
-          onSaveBtnClick();
-        } else {
-          onSubmitBtnClick();
+        switch (formMode) {
+          case FORM_MODE.EDIT:
+            onSaveBtnClick();
+            break;
+          case FORM_MODE.ADD:
+            onSubmitBtnClick();
+            break;
+          case FORM_MODE.VIEW:
+            hideMyForm();
+            break;
+          default:
         }
       }}
       onCancel={() => {
@@ -210,28 +259,37 @@ const MyForm = (props) => {
       <div>
         <Form {...layout}>
           <Form.Item label="事件名稱" colon={false}>
-            <Input
-              value={inputTextValue}
-              onChange={(e) => {
-                handleChange(e.target.value, "inputTextValue");
-              }}
-            />
+            {formMode === FORM_MODE.VIEW ? (
+              <label>{inputTextValue}</label>
+            ) : (
+              <Input
+                value={inputTextValue}
+                onChange={(e) => {
+                  handleChange(e.target.value, "inputTextValue");
+                }}
+              />
+            )}
           </Form.Item>
           <Form.Item label="緊急程度" colon={false}>
-            <Select
-              value={selectValue}
-              onChange={(val) => {
-                handleChange(val, "selectValue");
-              }}
-            >
-              {selectOption.map((val) => {
-                return (
-                  <Select.Option value={val.value} key={val.value}>
-                    {val.selectName}
-                  </Select.Option>
-                );
-              })}
-            </Select>
+            {formMode === FORM_MODE.VIEW ? (
+              <label>{selectValue ? priorityMap[selectValue] : "-"}</label>
+            ) : (
+              <Select
+                disabled={formMode === FORM_MODE.VIEW}
+                value={selectValue}
+                onChange={(val) => {
+                  handleChange(val, "selectValue");
+                }}
+              >
+                {selectOption.map((val) => {
+                  return (
+                    <Select.Option value={val.value} key={val.value}>
+                      {val.selectName}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            )}
           </Form.Item>
           <Form.Item
             colon={false}
@@ -245,72 +303,104 @@ const MyForm = (props) => {
               },
             ]}
           >
-            <Select
-              mode="multiple"
-              placeholder="Please select favourite colors"
-              value={multipleSelectValue}
-              onChange={(val) => {
-                handleChange(val, "multipleSelectValue");
-              }}
-            >
-              {multipleSelectOption.map((val) => {
-                return (
-                  <Select.Option value={val.value} key={val.value}>
-                    {val.selectName}
-                  </Select.Option>
-                );
-              })}
-            </Select>
+            {formMode === FORM_MODE.VIEW ? (
+              <label>
+                {multipleSelectValue.map((val) => {
+                  return `${multipleSelectMap[val]} `;
+                })}
+              </label>
+            ) : (
+              <Select
+                disabled={formMode === FORM_MODE.VIEW}
+                mode="multiple"
+                placeholder="Please select favourite colors"
+                value={multipleSelectValue}
+                onChange={(val) => {
+                  handleChange(val, "multipleSelectValue");
+                }}
+              >
+                {multipleSelectOption.map((val) => {
+                  return (
+                    <Select.Option value={val.value} key={val.value}>
+                      {val.selectName}
+                    </Select.Option>
+                  );
+                })}
+              </Select>
+            )}
           </Form.Item>
           <Form.Item label="喜好" colon={false}>
-            <Radio.Group
-              onChange={(e) => {
-                handleChange(e.target.value, "radioValue");
-              }}
-              value={radioValue}
-            >
-              {radioOption.map((val) => {
-                return (
-                  <Radio value={val.value} key={val.value}>
-                    {val.selectName}
-                  </Radio>
-                );
-              })}
-            </Radio.Group>
+            {formMode === FORM_MODE.VIEW ? (
+              <label>{radioValue ? likeMap[radioValue] : "-"}</label>
+            ) : (
+              <Radio.Group
+                disabled={formMode === FORM_MODE.VIEW}
+                onChange={(e) => {
+                  handleChange(e.target.value, "radioValue");
+                }}
+                value={radioValue}
+              >
+                {radioOption.map((val) => {
+                  return (
+                    <Radio value={val.value} key={val.value}>
+                      {val.selectName}
+                    </Radio>
+                  );
+                })}
+              </Radio.Group>
+            )}
           </Form.Item>
           <Form.Item label="日期" colon={false}>
-            <DatePicker
-              value={
-                datePickerString ? moment(datePickerString, "YYYY-MM-DD") : null
-              }
-              format="YYYY-MM-DD"
-              locale={locale}
-              onChange={(date, dateString) => {
-                handleChange(dateString, "datePickerString");
-              }}
-            />
+            {formMode === FORM_MODE.VIEW ? (
+              <label>{datePickerString ? datePickerString : "-"}</label>
+            ) : (
+              <DatePicker
+                disabled={formMode === FORM_MODE.VIEW}
+                value={
+                  datePickerString
+                    ? moment(datePickerString, "YYYY-MM-DD")
+                    : null
+                }
+                format="YYYY-MM-DD"
+                locale={locale}
+                onChange={(date, dateString) => {
+                  handleChange(dateString, "datePickerString");
+                }}
+              />
+            )}
           </Form.Item>
           <Form.Item label="時間" colon={false}>
-            <TimePicker
-              onChange={(time, timeString) => {
-                handleChange(timeString, "timePickerString");
-              }}
-              value={
-                timePickerString ? moment(timePickerString, "HH:mm") : null
-              }
-              format="HH:mm"
-            />
+            {formMode === FORM_MODE.VIEW ? (
+              <label>{timePickerString ? timePickerString : "-"}</label>
+            ) : (
+              <TimePicker
+                disabled={formMode === FORM_MODE.VIEW}
+                onChange={(time, timeString) => {
+                  handleChange(timeString, "timePickerString");
+                }}
+                value={
+                  timePickerString ? moment(timePickerString, "HH:mm") : null
+                }
+                format="HH:mm"
+              />
+            )}
           </Form.Item>
 
           <Form.Item label="是否完成" colon={false}>
-            <Switch
-              checked={switchValue}
-              onChange={(val) => {
-                handleChange(val, "switchValue");
-              }}
-            />
+            {formMode === FORM_MODE.VIEW ? (
+              <label>{switchValue ? "已完成" : "未完成"}</label>
+            ) : (
+              <Switch
+                disabled={formMode === FORM_MODE.VIEW}
+                checked={switchValue}
+                onChange={(val) => {
+                  console.log(props.showEditFormTrigger);
+                  handleChange(val, "switchValue");
+                }}
+              />
+            )}
           </Form.Item>
-          {isEditMode ? null : (
+          {formMode === FORM_MODE.ADD ? (
             <div>
               <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                 <Button htmlType="button" onClick={onResetBtnClick}>
@@ -318,7 +408,7 @@ const MyForm = (props) => {
                 </Button>
               </Form.Item>
             </div>
-          )}
+          ) : null}
         </Form>
 
         <Modal
@@ -326,10 +416,14 @@ const MyForm = (props) => {
           visible={confirmModalVisibleFlag}
           onOk={() => {
             setConfirmModalVisibleFlag(false);
-            if (isEditMode) {
-              saveData();
-            } else {
-              submitData();
+            switch (formMode) {
+              case FORM_MODE.EDIT:
+                saveData();
+                break;
+              case FORM_MODE.ADD:
+                submitData();
+                break;
+              default:
             }
           }}
           onCancel={handleConfirmModalCancel}
@@ -343,18 +437,19 @@ const MyForm = (props) => {
 
 const mapDispatchToProps = {
   updateTodoList,
-  setEditItemUuid,
-  resetEditFormTrigger,
-  resetAddFormTrigger,
+  setEditFormTrigger,
+  setAddFormTrigger,
+  setViewFormTrigger,
+  setUuidFromTable,
 };
 
 const mapStateToProps = (state) => {
   return {
     todoList: state.todoList,
-    isEditMode: state.isMyFormEditMode,
-    editItemUuid: state.editItemUuid,
+    uuidFromTable: state.uuidFromTable,
     showAddFormTrigger: state.showAddFormTrigger,
     showEditFormTrigger: state.showEditFormTrigger,
+    showViewFormTrigger: state.showViewFormTrigger,
   };
 };
 

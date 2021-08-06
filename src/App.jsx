@@ -21,11 +21,10 @@ const App = (props) => {
   });
 
   return (
-    <div>
+    <div style={{ margin: "2rem" }}>
       <SearchForm />
       <hr />
       <TodoTable />
-
       <MyForm />
     </div>
   );

@@ -16,7 +16,7 @@ import { radioOption, selectOption } from "../constant";
 import {
   searchByCondition,
   clearSearchResultList,
-  showAddForm,
+  setAddFormTrigger,
 } from "../redux/store";
 const { Title } = Typography;
 
@@ -62,7 +62,7 @@ const SearchForm = (props) => {
   };
 
   let onAddBtnClick = () => {
-    props.showAddForm();
+    props.setAddFormTrigger(true);
   };
 
   const layout = {
@@ -169,7 +169,7 @@ const SearchForm = (props) => {
 const mapDispatchToProps = {
   searchByCondition,
   clearSearchResultList,
-  showAddForm,
+  setAddFormTrigger,
 };
 /*
   const mapStateToProps = (state) => {

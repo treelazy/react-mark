@@ -3,24 +3,26 @@ import { createStore } from 'redux'
 const TODOLIST_INIT = 'TODOLIST_INIT';
 const TODOLIST_UPDATE = 'TODOLIST_UPDATE';
 const TODOLIST_DELETE_ITEM = 'TODOLIST_DELETE_ITEM';
-const SET_EDIT_ITEM_UUID = 'SET_EDIT_ITEM_UUID';
+const SET_UUID_FROM_TABLE = 'SET_UUID_FROM_TABLE';
 const SEARCH_BY_CONDITION = 'SEARCH_BY_CONDITION';
 const CLEAR_SEARCH_RESULT_LIST = 'CLEAR_SEARCH_RESULT_LIST';
-const SHOW_ADD_FORM = 'SHOW_ADD_FORM';
-const RESET_ADD_FORM_TRIGGER = 'RESET_ADD_FORM_TRIGGER';
-const SHOW_EDIT_FORM = 'SHOW_EDIT_FORM';
-const RESET_EDIT_FORM_TRIGGER = 'RESET_EDIT_FORM_TRIGGER';
+
+const SET_ADD_FORM_TRIGGER = 'SET_ADD_FORM_TRIGGER';
+const SET_EDIT_FORM_TRIGGER = 'SET_EDIT_FORM_TRIGGER';
+const SET_VIEW_FORM_TRIGGER = 'SET_VIEW_FORM_TRIGGER'
 
 
 // 初始狀態寫在Reducer 參數初始值
 const initState = {
     todoList: {},
     searchResultList: null,
-    editItemUuid: '',
+    uuidFromTable: '',
+    formMode: null,
     lastActionType: null,
     showAddFormTrigger: false,
     showEditFormTrigger: false,
-}
+    showViewFormTrigger: false,
+};
 
 function dataReducer(state = initState, action) {
     state.lastActionType = action.type
@@ -40,7 +42,6 @@ function dataReducer(state = initState, action) {
                 state.searchResultList[uuid] = action.payload;
                 state.searchResultList = { ...state.searchResultList };
             }
-
             return { ...state };
         case TODOLIST_DELETE_ITEM:
             let deleteID = action.payload;
@@ -54,8 +55,8 @@ function dataReducer(state = initState, action) {
             }
 
             return { ...state };
-        case SET_EDIT_ITEM_UUID:
-            state.editItemUuid = action.payload;
+        case SET_UUID_FROM_TABLE:
+            state.uuidFromTable = action.payload;
             return { ...state };
         case SEARCH_BY_CONDITION:
             let condition = action.payload;
@@ -93,17 +94,14 @@ function dataReducer(state = initState, action) {
         case CLEAR_SEARCH_RESULT_LIST:
             state.searchResultList = null;
             return { ...state };
-        case SHOW_ADD_FORM:
-            state.showAddFormTrigger = true;
+        case SET_ADD_FORM_TRIGGER:
+            state.showAddFormTrigger = action.payload;
             return { ...state };
-        case SHOW_EDIT_FORM:
-            state.showEditFormTrigger = true;
+        case SET_EDIT_FORM_TRIGGER:
+            state.showEditFormTrigger = action.payload;
             return { ...state };
-        case RESET_ADD_FORM_TRIGGER:
-            state.showAddFormTrigger = false;
-            return { ...state };
-        case RESET_EDIT_FORM_TRIGGER:
-            state.showEditFormTrigger = false;
+        case SET_VIEW_FORM_TRIGGER:
+            state.showViewFormTrigger = action.payload;
             return { ...state };
         default:
             return state;
@@ -133,13 +131,11 @@ store.subscribe(() => {
 export const initTodoList = (data) => ({ type: TODOLIST_INIT, payload: data });
 export const updateTodoList = (data) => ({ type: TODOLIST_UPDATE, payload: data });
 export const deleteTodoListItem = (id) => ({ type: TODOLIST_DELETE_ITEM, payload: id });
-export const setEditItemUuid = (uuid) => ({ type: SET_EDIT_ITEM_UUID, payload: uuid });
+export const setUuidFromTable = (uuid) => ({ type: SET_UUID_FROM_TABLE, payload: uuid });
 export const searchByCondition = (condition) => ({ type: SEARCH_BY_CONDITION, payload: condition });
 export const clearSearchResultList = () => ({ type: CLEAR_SEARCH_RESULT_LIST });
-export const showAddForm = () => ({ type: SHOW_ADD_FORM });
-export const showEditForm = () => ({ type: SHOW_EDIT_FORM });
-export const resetAddFormTrigger = () => ({ type: RESET_ADD_FORM_TRIGGER });
-export const resetEditFormTrigger = () => ({ type: RESET_EDIT_FORM_TRIGGER });
-
+export const setAddFormTrigger = (b) => ({ type: SET_ADD_FORM_TRIGGER, payload: b });
+export const setEditFormTrigger = (b) => ({ type: SET_EDIT_FORM_TRIGGER, payload: b });
+export const setViewFormTrigger = (b) => ({ type: SET_VIEW_FORM_TRIGGER, payload: b });
 
 export default store;

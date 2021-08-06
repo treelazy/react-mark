@@ -5,8 +5,9 @@ import { connect } from "react-redux";
 import { likeMap, multipleSelectMap, priorityMap } from "../constant";
 import {
   deleteTodoListItem,
-  setEditItemUuid,
-  showEditForm,
+  setUuidFromTable,
+  setEditFormTrigger,
+  setViewFormTrigger,
 } from "../redux/store";
 const { Title } = Typography;
 
@@ -28,14 +29,19 @@ const TodoTable = (props) => {
   }, [props.searchResultList]);
 
   let onEditBtnClick = (uuid) => {
-    props.showEditForm();
-    props.setEditItemUuid(uuid);
+    props.setUuidFromTable(uuid);
+    props.setEditFormTrigger(true);
   };
 
   let onDeleteBtnClick = (uuid) => {
     showModal("確定要刪除該筆資料嗎?", () => {
       props.deleteTodoListItem(uuid);
     });
+  };
+
+  let onViewBtnClick = (uuid) => {
+    props.setUuidFromTable(uuid);
+    props.setViewFormTrigger(true);
   };
 
   let getDataSource = () => {
@@ -49,23 +55,24 @@ const TodoTable = (props) => {
     let dataSource = [];
     Object.keys(tableTodoList).forEach((key, index) => {
       let obj = { ...tableTodoList[key] };
-      obj["selectValue"] = priorityMap[obj["selectValue"]];
-      obj["radioValue"] = likeMap[obj["radioValue"]];
-      obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
-      if (obj["multipleSelectValue"].length !== 0) {
-        let multipleSelectStr = "";
-        obj["multipleSelectValue"].forEach((val) => {
-          if (!multipleSelectStr) {
-            multipleSelectStr += multipleSelectMap[val];
-          } else {
-            multipleSelectStr += `, ${multipleSelectMap[val]}`;
-          }
-        });
 
-        obj["multipleSelectValue"] = multipleSelectStr;
-      } else {
-        obj["multipleSelectValue"] = "";
-      }
+      obj["datePickerString"] = obj["datePickerString"]
+        ? obj["datePickerString"]
+        : "-";
+      obj["timePickerString"] = obj["timePickerString"]
+        ? obj["timePickerString"]
+        : "-";
+      obj["selectValue"] = obj["selectValue"]
+        ? priorityMap[obj["selectValue"]]
+        : "-";
+      obj["radioValue"] = obj["radioValue"] ? likeMap[obj["radioValue"]] : "-";
+      obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
+      obj["multipleSelectValue"] = obj["multipleSelectValue"].length
+        ? obj["multipleSelectValue"].map((val) => {
+            return `${multipleSelectMap[val]} `;
+          })
+        : "-";
+
       obj["key"] = index;
       obj["action"] = (
         <div>
@@ -89,8 +96,19 @@ const TodoTable = (props) => {
           >
             Delete
           </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+            id={obj["uuid"]}
+            htmlType="button"
+            onClick={() => {
+              onViewBtnClick(obj["uuid"]);
+            }}
+          >
+            View
+          </Button>
         </div>
       );
+
       dataSource[index] = obj;
     });
     return dataSource;
@@ -172,8 +190,9 @@ const TodoTable = (props) => {
 
 const mapDispatchToProps = {
   deleteTodoListItem,
-  setEditItemUuid,
-  showEditForm,
+  setUuidFromTable,
+  setEditFormTrigger,
+  setViewFormTrigger,
 };
 
 const mapStateToProps = (state) => {

@@ -1,3 +1,5 @@
+export const FORM_MODE = Object.freeze({ EDIT: 1, ADD: 2, VIEW: 3 });
+
 export const selectOption = [
     { value: 1, selectName: "普通" },
     { value: 2, selectName: "重要" },
