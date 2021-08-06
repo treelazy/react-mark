@@ -1,3 +1,5 @@
+export const SEARCH_DATE_PICKER_TYPE = Object.freeze({ START: "START", END: "END" });
+
 export const FORM_MODE = Object.freeze({ EDIT: 1, ADD: 2, VIEW: 3 });
 
 export const selectOption = [

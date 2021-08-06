@@ -1,4 +1,5 @@
 import { createStore } from 'redux'
+import moment from "moment";
 
 const TODOLIST_INIT = 'TODOLIST_INIT';
 const TODOLIST_UPDATE = 'TODOLIST_UPDATE';
@@ -67,25 +68,31 @@ function dataReducer(state = initState, action) {
                 let isInputTextValueOK = false;
                 let isSelectValueOK = false;
                 let isRadioValueOK = false;
+                let isDateStartOK = false;
+                let isDateEndOK = false;
                 if (val.switchValue === condition.searchSwitchValue) {
                     isSwitchValueOK = true;
                 }
-
                 if (condition.searchInputTextValue === '' || val.inputTextValue.includes(condition.searchInputTextValue)) {
                     isInputTextValueOK = true;
                 }
-
                 if (condition.searchSelectValue === null || val.selectValue === condition.searchSelectValue) {
                     isSelectValueOK = true;
                 }
-
                 if (condition.searchRadioValue === null || val.radioValue === condition.searchRadioValue) {
                     isRadioValueOK = true;
                 }
-
-                if (isSwitchValueOK && isInputTextValueOK && isSelectValueOK && isRadioValueOK) {
+                if (condition.searchStartDateString === null || moment(condition.searchStartDateString) <= moment(val.datePickerString)) {
+                    isDateStartOK = true;
+                }
+                if (condition.searchEndDateString === null || moment(condition.searchEndDateString) >= moment(val.datePickerString)) {
+                    isDateEndOK = true;
+                }
+                //----------------------------------------------------------------------------------------------
+                if (isSwitchValueOK && isInputTextValueOK && isSelectValueOK && isRadioValueOK && isDateStartOK && isDateEndOK) {
                     searchResult[key] = val;
                 }
+
 
             });
 

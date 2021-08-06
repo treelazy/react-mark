@@ -5,14 +5,20 @@ import {
   Radio,
   Select,
   Switch,
+  DatePicker,
   Typography,
   Row,
   Col,
 } from "antd";
-
+import moment from "moment";
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { radioOption, selectOption } from "../constant";
+import {
+  radioOption,
+  SEARCH_DATE_PICKER_TYPE,
+  selectOption,
+} from "../constant";
+import locale from "antd/es/date-picker/locale/zh_CN";
 import {
   searchByCondition,
   clearSearchResultList,
@@ -25,6 +31,8 @@ const SearchForm = (props) => {
   const [searchSwitchValue, setSearchSwitchValue] = useState(false);
   const [searchSelectValue, setSearchSelectValue] = useState(null);
   const [searchRadioValue, setSearchRadioValue] = useState(null);
+  const [searchStartDateString, setSearchStartDateString] = useState(null);
+  const [searchEndDateString, setSearchEndDateString] = useState(null);
 
   let handleChange = (value, stateName) => {
     switch (stateName) {
@@ -44,12 +52,27 @@ const SearchForm = (props) => {
     }
   };
 
+  let handleDatePickerChange = (pickerType, date, dateString) => {
+    switch (pickerType) {
+      case SEARCH_DATE_PICKER_TYPE.START:
+        setSearchStartDateString(dateString);
+        break;
+      case SEARCH_DATE_PICKER_TYPE.END:
+        setSearchEndDateString(dateString);
+        break;
+      default:
+        break;
+    }
+  };
+
   let onSearchBtnClick = () => {
     props.searchByCondition({
       searchInputTextValue,
       searchSwitchValue,
       searchSelectValue,
       searchRadioValue,
+      searchStartDateString,
+      searchEndDateString,
     });
   };
 
@@ -63,6 +86,23 @@ const SearchForm = (props) => {
 
   let onAddBtnClick = () => {
     props.setAddFormTrigger(true);
+  };
+
+  let disabledDateForStart = (current) => {
+    // Can not select days before today and today
+    if (!searchEndDateString) {
+      return;
+    }
+
+    return current && current > moment(searchEndDateString);
+  };
+
+  let disabledDateForEnd = (current) => {
+    if (!searchStartDateString) {
+      return;
+    }
+
+    return current && current < moment(searchStartDateString);
   };
 
   const layout = {
@@ -82,6 +122,45 @@ const SearchForm = (props) => {
             value={searchInputTextValue}
             onChange={(e) => {
               handleChange(e.target.value, "searchInputTextValue");
+            }}
+          />
+        </Form.Item>
+        <Form.Item label="時間範圍" colon={false}>
+          <DatePicker
+            placeholder="開始日期"
+            format="YYYY-MM-DD"
+            locale={locale}
+            disabledDate={disabledDateForStart}
+            value={
+              searchStartDateString
+                ? moment(searchStartDateString, "YYYY-MM-DD")
+                : null
+            }
+            onChange={(date, dateString) => {
+              handleDatePickerChange(
+                SEARCH_DATE_PICKER_TYPE.START,
+                date,
+                dateString
+              );
+            }}
+          />
+          &nbsp;&nbsp;&nbsp;
+          <DatePicker
+            placeholder="結束日期"
+            format="YYYY-MM-DD"
+            locale={locale}
+            disabledDate={disabledDateForEnd}
+            value={
+              searchEndDateString
+                ? moment(searchEndDateString, "YYYY-MM-DD")
+                : null
+            }
+            onChange={(date, dateString) => {
+              handleDatePickerChange(
+                SEARCH_DATE_PICKER_TYPE.END,
+                date,
+                dateString
+              );
             }}
           />
         </Form.Item>
