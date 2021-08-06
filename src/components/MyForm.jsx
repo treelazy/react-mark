@@ -305,9 +305,11 @@ const MyForm = (props) => {
           >
             {formMode === FORM_MODE.VIEW ? (
               <label>
-                {multipleSelectValue.map((val) => {
-                  return `${multipleSelectMap[val]} `;
-                })}
+                {multipleSelectValue.length > 0
+                  ? multipleSelectValue.map((val) => {
+                      return `${multipleSelectMap[val]} `;
+                    })
+                  : "-"}
               </label>
             ) : (
               <Select

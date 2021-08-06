@@ -33,6 +33,8 @@ const SearchForm = (props) => {
   const [searchRadioValue, setSearchRadioValue] = useState(null);
   const [searchStartDateString, setSearchStartDateString] = useState(null);
   const [searchEndDateString, setSearchEndDateString] = useState(null);
+  const [searchStartDateDefault, setSearchStartDateDefault] = useState(null);
+  const [searchEndDateDefault, setSearchEndDateDefault] = useState(null);
 
   let handleChange = (value, stateName) => {
     switch (stateName) {
@@ -88,20 +90,26 @@ const SearchForm = (props) => {
     props.setAddFormTrigger(true);
   };
 
+  // 日期禁能的功能與對應的預設日期設置
   let disabledDateForStart = (current) => {
     // Can not select days before today and today
     if (!searchEndDateString) {
+      setSearchStartDateDefault(null);
       return;
+    } else {
+      setSearchStartDateDefault(searchEndDateString);
     }
-
     return current && current > moment(searchEndDateString);
   };
 
+  // 日期禁能的功能與對應的預設日期設置
   let disabledDateForEnd = (current) => {
     if (!searchStartDateString) {
+      setSearchEndDateDefault(null);
       return;
+    } else {
+      setSearchEndDateDefault(searchStartDateString);
     }
-
     return current && current < moment(searchStartDateString);
   };
 
@@ -127,6 +135,11 @@ const SearchForm = (props) => {
         </Form.Item>
         <Form.Item label="時間範圍" colon={false}>
           <DatePicker
+            defaultPickerValue={
+              searchStartDateDefault === null
+                ? null
+                : moment(searchStartDateDefault)
+            }
             placeholder="開始日期"
             format="YYYY-MM-DD"
             locale={locale}
@@ -146,6 +159,11 @@ const SearchForm = (props) => {
           />
           &nbsp;&nbsp;&nbsp;
           <DatePicker
+            defaultPickerValue={
+              searchEndDateDefault === null
+                ? null
+                : moment(searchEndDateDefault)
+            }
             placeholder="結束日期"
             format="YYYY-MM-DD"
             locale={locale}
@@ -250,6 +268,7 @@ const mapDispatchToProps = {
   clearSearchResultList,
   setAddFormTrigger,
 };
+
 /*
   const mapStateToProps = (state) => {
     return {
@@ -257,5 +276,5 @@ const mapDispatchToProps = {
       searchResultList: state.searchResultList,
     };
   };
-  */
+*/
 export default connect(null, mapDispatchToProps)(SearchForm);

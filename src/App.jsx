@@ -1,11 +1,9 @@
 import React from "react";
-import "antd/dist/antd.css";
-import MyForm from "./components/MyForm";
 import { initTodoList } from "./redux/store";
 import { connect } from "react-redux";
-import TodoTable from "./components/TodoTable";
-import SearchForm from "./components/SearchForm";
 import { useEffect } from "react";
+import TrainingOne from "./components/TrainingOne";
+import "antd/dist/antd.css";
 
 const App = (props) => {
   useEffect(() => {
@@ -21,11 +19,8 @@ const App = (props) => {
   });
 
   return (
-    <div style={{ margin: "2rem" }}>
-      <SearchForm />
-      <hr />
-      <TodoTable />
-      <MyForm />
+    <div>
+      <TrainingOne />
     </div>
   );
 };
