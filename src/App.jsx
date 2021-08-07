@@ -2,8 +2,9 @@ import React from "react";
 import { initTodoList } from "./redux/store";
 import { connect } from "react-redux";
 import { useEffect } from "react";
-import TrainingOne from "./components/TrainingOne";
+//import TrainingOne from "./components/TrainingOne";
 import "antd/dist/antd.css";
+import TrainingTwo from "./components/TrainingTwo/TrainingTwo";
 
 const App = (props) => {
   useEffect(() => {
@@ -20,7 +21,14 @@ const App = (props) => {
 
   return (
     <div>
-      <TrainingOne />
+      {
+        //TrainingOne
+        //<TrainingOne />
+      }
+      {
+        //TrainingTwo
+        <TrainingTwo />
+      }
     </div>
   );
 };
