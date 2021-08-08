@@ -1,5 +1,5 @@
 import { Formik } from "formik";
-import { Form, Input, Row, Col } from "antd";
+import { Form, Input, Row, Col, Switch } from "antd";
 import React from "react";
 import { getDescriptionLength, valuesSchema } from "./validationSchema";
 
@@ -8,9 +8,11 @@ const ValidationForm = () => {
     const value = {
       serialNumber: "",
       organizationName: "",
-      weight: null,
+      weight: "",
       description: "",
       instruction: "",
+      hasUpperLimit: false,
+      upperLimit: "",
     };
     return value;
   };
@@ -136,6 +138,47 @@ const ValidationForm = () => {
                       <label style={{ color: "red", fontSize: "0.5rem" }}>
                         {props.touched.instruction
                           ? props.errors.instruction
+                          : null}
+                      </label>
+                    </div>
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="上限"
+                    colon={false}
+                    required={props.values.hasUpperLimit}
+                  >
+                    <div style={{ display: "inline-block" }}>
+                      <Switch
+                        style={{ display: "inline" }}
+                        onChange={(value) => {
+                          props.setFieldValue("hasUpperLimit", value, false);
+                          if (!value) {
+                            props.setFieldValue("upperLimit", "", false);
+                          }
+                        }}
+                        onBlur={props.handleBlur}
+                        checked={props.values.hasUpperLimit}
+                        value={props.values.hasUpperLimit}
+                      />
+                      &nbsp;&nbsp;&nbsp;
+                      <Input
+                        style={{ width: "12rem" }}
+                        type="text"
+                        disabled={!props.values.hasUpperLimit}
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.upperLimit}
+                        name="upperLimit"
+                        placeholder={props.values.hasUpperLimit ? "請輸入" : ""}
+                        suffix={`${props.values.upperLimit.length}/10`}
+                      />
+                      <label style={{ color: "red", fontSize: "0.5rem" }}>
+                        {props.values.hasUpperLimit
+                          ? props.touched.upperLimit
+                            ? props.errors.upperLimit
+                            : null
                           : null}
                       </label>
                     </div>
