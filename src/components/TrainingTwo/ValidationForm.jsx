@@ -1,7 +1,7 @@
 import { Formik } from "formik";
 import { Form, Input, Row, Col } from "antd";
 import React from "react";
-import { valuesSchema } from "./validationSchema";
+import { getDescriptionLength, valuesSchema } from "./validationSchema";
 
 const ValidationForm = () => {
   let initFormikValue = () => {
@@ -9,10 +9,11 @@ const ValidationForm = () => {
       serialNumber: "",
       organizationName: "",
       weight: null,
+      description: "",
     };
     return value;
   };
-
+  // isNthPositiveFloat: n => new RegExp(`^(0|[1-9][0-9]*)(\\.[0-9]{1,${n}})?$`),
   return (
     <div>
       <Formik
@@ -55,7 +56,7 @@ const ValidationForm = () => {
                   <Form.Item label="組織名稱" colon={false}>
                     <div style={{ display: "inline-block" }}>
                       <Input
-                        style={{ width: "20rem", display: "block" }}
+                        style={{ width: "15rem", display: "block" }}
                         type="text"
                         onChange={props.handleChange}
                         onBlur={props.handleBlur}
@@ -86,12 +87,45 @@ const ValidationForm = () => {
                         suffix="kg"
                       />
                       <label style={{ color: "red", fontSize: "0.5rem" }}>
-                        {props.errors.touched ? props.errors.weight : null}
+                        {props.touched.weight ? props.errors.weight : null}
                       </label>
                     </div>
                   </Form.Item>
                 </Col>
               </Row>
+              <Row justify="space-around" style={{ width: "100vw" }}>
+                <Col span={8}>
+                  <Form.Item required={true} label="描述" colon={false}>
+                    <div style={{ display: "inline-block" }}>
+                      <Input.TextArea
+                        style={{ width: "60vw", height: "30vh" }}
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.description}
+                        name="description"
+                      />
+                      <br />
+                      <label style={{ width: "2rem" }}>{`${getDescriptionLength(
+                        props.values.description
+                      )}/3000`}</label>
+                      &nbsp;&nbsp;&nbsp;
+                      <label style={{ color: "red", fontSize: "0.5rem" }}>
+                        {props.touched.description
+                          ? props.errors.description
+                          : null}
+                      </label>
+                    </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <button
+                onClick={() => {
+                  let a = { a: props.values.description };
+                  console.log(a);
+                }}
+              >
+                click
+              </button>
             </Form>
           );
         }}
