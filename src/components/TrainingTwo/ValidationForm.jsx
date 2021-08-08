@@ -10,6 +10,7 @@ const ValidationForm = () => {
       organizationName: "",
       weight: null,
       description: "",
+      instruction: "",
     };
     return value;
   };
@@ -112,6 +113,29 @@ const ValidationForm = () => {
                       <label style={{ color: "red", fontSize: "0.5rem" }}>
                         {props.touched.description
                           ? props.errors.description
+                          : null}
+                      </label>
+                    </div>
+                  </Form.Item>
+                </Col>
+              </Row>
+              <Row justify="space-around" style={{ width: "100vw" }}>
+                <Col span={8}>
+                  <Form.Item label="使用方式" colon={false}>
+                    <div style={{ display: "inline-block" }}>
+                      <Input
+                        style={{ width: "15rem", display: "block" }}
+                        type="text"
+                        onChange={props.handleChange}
+                        onBlur={props.handleBlur}
+                        value={props.values.instruction}
+                        name="instruction"
+                        placeholder="請輸入"
+                        suffix={`${props.values.instruction.length}/15`}
+                      />
+                      <label style={{ color: "red", fontSize: "0.5rem" }}>
+                        {props.touched.instruction
+                          ? props.errors.instruction
                           : null}
                       </label>
                     </div>
