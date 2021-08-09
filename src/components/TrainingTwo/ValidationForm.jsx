@@ -1,18 +1,21 @@
 import { Formik } from "formik";
-import { Form, Input, Row, Col, Switch } from "antd";
+import { Form, Input, Row, Col, Switch, Select } from "antd";
 import React from "react";
 import { getDescriptionLength, valuesSchema } from "./validationSchema";
+import { FORM_COLOR_OPTION } from "./Constant";
+import DateTimePickerStartEnd from "./DateTimePickerStartEnd";
 
 const ValidationForm = () => {
   let initFormikValue = () => {
     const value = {
       serialNumber: "",
       organizationName: "",
-      weight: "",
+      weight: "0",
       description: "",
       instruction: "",
       hasUpperLimit: false,
       upperLimit: "",
+      color: [],
     };
     return value;
   };
@@ -26,7 +29,8 @@ const ValidationForm = () => {
           actions.setSubmitting(false);
         }}
         validationSchema={valuesSchema}
-        render={(props) => {
+      >
+        {(props) => {
           const layout = {
             labelCol: { span: 4 },
             wrapperCol: { span: 14 },
@@ -184,19 +188,53 @@ const ValidationForm = () => {
                     </div>
                   </Form.Item>
                 </Col>
+                <Col span={8}>
+                  <Form.Item label="顏色" colon={false} required={true}>
+                    <div style={{ display: "inline-block" }}>
+                      <Select
+                        style={{ width: "8rem" }}
+                        mode="multiple"
+                        placeholder="請選擇"
+                        value={props.values.color}
+                        name="color"
+                        onChange={(value) => {
+                          value.sort();
+                          props.setFieldValue("color", value, true);
+                        }}
+                      >
+                        {FORM_COLOR_OPTION.map((val, index, arr) => {
+                          return (
+                            <Select.Option value={index} key={index}>
+                              {val}
+                            </Select.Option>
+                          );
+                        })}
+                      </Select>
+                      <label style={{ color: "red", fontSize: "0.5rem" }}>
+                        {props.errors.color}
+                      </label>
+                    </div>
+                  </Form.Item>
+                </Col>
               </Row>
-              <button
-                onClick={() => {
-                  let a = { a: props.values.description };
-                  console.log(a);
-                }}
-              >
-                click
-              </button>
+              <Row>
+                <Col span={16}>
+                  <DateTimePickerStartEnd />
+                </Col>
+              </Row>
+              {/*
+                <button
+                  onClick={() => {
+                    let a = { a: props.values.description };
+                    console.log(a);
+                  }}
+                >
+                  click
+                </button>*/}
             </Form>
           );
         }}
-      ></Formik>
+      </Formik>
     </div>
   );
 };
