@@ -8,6 +8,7 @@ import {
   setUuidFromTable,
   setEditFormTrigger,
   setViewFormTrigger,
+  initTodoList,
 } from "../redux/store";
 const { Title } = Typography;
 
@@ -16,6 +17,19 @@ const TodoTable = (props) => {
   const [modalText, setModalText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
   let handleModalOk = null;
+
+  useEffect(() => {
+    let todoListString = localStorage.getItem("todoListData");
+    let todoList = null;
+    if (!todoListString) {
+      todoList = {};
+    } else {
+      todoList = JSON.parse(todoListString);
+      props.initTodoList(todoList);
+    }
+    return () => {};
+  });
+
   useEffect(() => {
     if (props.searchResultList === null) {
       setTitle("全部資料");
@@ -193,6 +207,7 @@ const mapDispatchToProps = {
   setUuidFromTable,
   setEditFormTrigger,
   setViewFormTrigger,
+  initTodoList,
 };
 
 const mapStateToProps = (state) => {

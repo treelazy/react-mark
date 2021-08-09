@@ -1,9 +1,11 @@
 import { Formik } from "formik";
-import { Form, Input, Row, Col, Switch, Select } from "antd";
+import { Form, Input, Row, Col, Switch, Select, Radio, Button } from "antd";
 import React from "react";
 import { getDescriptionLength, valuesSchema } from "./validationSchema";
-import { FORM_COLOR_OPTION } from "./Constant";
+import { FORM_COLOR_OPTION, SEX_OPTION } from "./Constant";
 import DateTimePickerStartEnd from "./DateTimePickerStartEnd";
+import { useContext } from "react";
+import { MyContext } from "./TrainingTwo";
 
 const ValidationForm = () => {
   let initFormikValue = () => {
@@ -16,10 +18,19 @@ const ValidationForm = () => {
       hasUpperLimit: false,
       upperLimit: "",
       color: [],
+      startEndDateTime: [null, null, null, null],
+      gender: 0,
     };
     return value;
   };
-  // isNthPositiveFloat: n => new RegExp(`^(0|[1-9][0-9]*)(\\.[0-9]{1,${n}})?$`),
+
+  const { updateValidationFormList } = useContext(MyContext);
+
+  let submitForm = (values) => {
+    console.log(values);
+    updateValidationFormList(values);
+  };
+
   return (
     <div>
       <Formik
@@ -201,8 +212,12 @@ const ValidationForm = () => {
                           value.sort();
                           props.setFieldValue("color", value, true);
                         }}
+                        /*好像有問題 回傳的值與onChange相同*/
+                        onBlur={() => {
+                          props.setFieldTouched("color", true);
+                        }}
                       >
-                        {FORM_COLOR_OPTION.map((val, index, arr) => {
+                        {FORM_COLOR_OPTION.map((val, index) => {
                           return (
                             <Select.Option value={index} key={index}>
                               {val}
@@ -211,26 +226,64 @@ const ValidationForm = () => {
                         })}
                       </Select>
                       <label style={{ color: "red", fontSize: "0.5rem" }}>
-                        {props.errors.color}
+                        {props.touched.color ? props.errors.color : null}
                       </label>
                     </div>
                   </Form.Item>
                 </Col>
               </Row>
-              <Row>
-                <Col span={16}>
-                  <DateTimePickerStartEnd />
+              <Row justify="space-around" style={{ width: "100vw" }}>
+                <DateTimePickerStartEnd
+                  value={props.values.startEndDateTime}
+                  name="startEndDateTime"
+                  onChange={(value) => {
+                    props.setFieldValue("startEndDateTime", value, true);
+                  }}
+                  errorMessage={
+                    props.touched.startEndDateTime
+                      ? props.errors.startEndDateTime
+                      : null
+                  }
+                  onBlur={() => {
+                    props.setFieldTouched("startEndDateTime", true);
+                  }}
+                />
+
+                <Col span={8}>
+                  <Form.Item label="性別" colon={false} required={true}>
+                    <Radio.Group
+                      onChange={props.handleChange}
+                      value={props.values.gender}
+                      name="gender"
+                    >
+                      {SEX_OPTION.map((val, id) => {
+                        return (
+                          <Radio value={id} key={id}>
+                            {val}
+                          </Radio>
+                        );
+                      })}
+                    </Radio.Group>
+                  </Form.Item>
                 </Col>
               </Row>
-              {/*
-                <button
-                  onClick={() => {
-                    let a = { a: props.values.description };
-                    console.log(a);
-                  }}
-                >
-                  click
-                </button>*/}
+              <Button
+                onClick={() => {
+                  props.handleReset();
+                }}
+              >
+                Reset Form
+              </Button>
+              <Button
+                onClick={() => {
+                  if (props.isValid) {
+                    submitForm(props.values);
+                  } else {
+                  }
+                }}
+              >
+                Test Save
+              </Button>
             </Form>
           );
         }}
