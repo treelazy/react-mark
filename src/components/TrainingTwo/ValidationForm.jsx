@@ -46,6 +46,7 @@ const ValidationForm = () => {
             labelCol: { span: 4 },
             wrapperCol: { span: 14 },
           };
+
           return (
             <Form {...layout}>
               <Row justify="space-around" style={{ width: "100vw" }}>
@@ -236,9 +237,8 @@ const ValidationForm = () => {
                 <DateTimePickerStartEnd
                   value={props.values.startEndDateTime}
                   name="startEndDateTime"
-                  onChange={(value) => {
-                    props.setFieldValue("startEndDateTime", value, true);
-                  }}
+                  // 將設值的函式傳進去給裡面onchange用
+                  setFieldValue={props.setFieldValue}
                   errorMessage={
                     props.touched.startEndDateTime
                       ? props.errors.startEndDateTime

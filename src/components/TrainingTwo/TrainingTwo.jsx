@@ -13,14 +13,19 @@ const TrainingTwo = () => {
     setValidationFormList(newList);
   };
 
-  const showConfirmModal = (title, text) => {
-    Modal.confirm({ title: title, content: <h1>{text}</h1> });
+  const showConfirmModal = (title, text, okText, cancelText, onOkClickCB) => {
+    Modal.confirm({
+      okText,
+      cancelText,
+      title,
+      content: <h1>{text}</h1>,
+      onOk: onOkClickCB,
+    });
   };
 
   useEffect(() => {
     let listString = JSON.stringify(validationFormList);
     localStorage.setItem("validationFormData", listString);
-    showConfirmModal("123");
   }, [validationFormList]);
 
   return (

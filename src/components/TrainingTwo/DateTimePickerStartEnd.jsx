@@ -29,10 +29,10 @@ const DateTimePickerStartEnd = (props) => {
       default:
     }
   };
-  const { onChange } = props;
+  const { setFieldValue } = props;
   useEffect(() => {
-    onChange([startDate, startTime, endDate, endTime]);
-  }, [startDate, startTime, endDate, endTime]);
+    setFieldValue([startDate, startTime, endDate, endTime]);
+  }, [startDate, startTime, endDate, endTime, setFieldValue]);
 
   let onPickerBlur = () => {
     if (props.onBlur) {
