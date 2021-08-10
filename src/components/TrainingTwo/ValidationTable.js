@@ -65,6 +65,16 @@ const ValidationTable = () => {
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <Button
             id={item.serialNumber}
+            htmlType="button"
+            onClick={() => {
+              //onViewBtnClick(item.serialNumber);
+            }}
+          >
+            View
+          </Button>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <Button
+            id={item.serialNumber}
             type="danger"
             htmlType="button"
             onClick={() => {
@@ -82,16 +92,6 @@ const ValidationTable = () => {
             }}
           >
             Delete
-          </Button>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <Button
-            id={item.serialNumber}
-            htmlType="button"
-            onClick={() => {
-              //onViewBtnClick(item.serialNumber);
-            }}
-          >
-            View
           </Button>
         </div>
       );

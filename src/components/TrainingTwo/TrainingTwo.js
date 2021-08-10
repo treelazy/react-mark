@@ -30,6 +30,7 @@ const TrainingTwo = () => {
   const updateValidationFormList = useCallback(
     (itemData) => {
       let newList = { ...validationFormList };
+      delete newList.isEditMode;
       newList[itemData.serialNumber] = itemData;
       setValidationFormList(newList);
     },
@@ -98,7 +99,9 @@ const TrainingTwo = () => {
   useEffect(() => {
     if (validationFormList !== null) {
       let listString = JSON.stringify(validationFormList);
+      let keysString = JSON.stringify(Object.keys(validationFormList));
       localStorage.setItem("validationFormData", listString);
+      localStorage.setItem("validationFormKeys", keysString);
     }
   }, [validationFormList]);
 

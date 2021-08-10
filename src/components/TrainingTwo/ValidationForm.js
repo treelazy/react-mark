@@ -21,6 +21,7 @@ const ValidationForm = () => {
       endTime: null,
       startEndDateTime: [null, null, null, null],
       gender: 0,
+      isEditMode: false,
     };
     return value;
   };

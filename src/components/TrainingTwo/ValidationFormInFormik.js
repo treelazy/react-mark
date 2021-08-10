@@ -11,6 +11,7 @@ import {
   Button,
   Modal,
   Typography,
+  message,
 } from "antd";
 
 import { getDescriptionLength } from "./validationSchema";
@@ -31,25 +32,31 @@ const ValidationFormInFormik = (props) => {
     formVisible,
     formTargerSerialNumber,
     validationFormList,
+    showConfirmModal,
   } = useContext(MyContext);
   const {
+    isValid,
     values,
     errors,
     touched,
-    isValid,
     setFieldValue,
     handleChange,
     handleBlur,
     setFieldTouched,
     handleReset,
+    validateForm,
+    setTouched,
   } = useFormikContext();
   const [title, setTitle] = useState("新增資料");
   useEffect(() => {
+    setFieldValue("isEditMode", false, false);
     switch (formMode) {
       case FORM_MODE.ADD:
+        handleReset();
         setTitle("新增資料");
         break;
       case FORM_MODE.EDIT:
+        setFieldValue("isEditMode", true, false);
         setTitle("編輯資料");
         let id = formTargerSerialNumber;
         setFieldValue("serialNumber", validationFormList[id].serialNumber);
@@ -77,12 +84,13 @@ const ValidationFormInFormik = (props) => {
       default:
         break;
     }
-  }, [formMode, formTargerSerialNumber, validationFormList, setFieldValue]);
-
-  const submitForm = (values) => {
-    console.log(values);
-    updateValidationFormList(values);
-  };
+  }, [
+    formMode,
+    formTargerSerialNumber,
+    validationFormList,
+    setFieldValue,
+    handleReset,
+  ]);
 
   const layout = {
     labelCol: { span: 4 },
@@ -95,6 +103,46 @@ const ValidationFormInFormik = (props) => {
         width="80vw"
         onCancel={() => {
           setFormVisible(false);
+        }}
+        onOk={() => {
+          if (!isValid) {
+            //驗證欄位是否有誤, 設定所有touched, 讓它顯示警告
+            validateForm().then((errors) =>
+              setTouched({ ...touched, ...errors })
+            );
+            message.error("表單目前存在錯誤!");
+            return;
+          }
+          switch (formMode) {
+            case FORM_MODE.ADD:
+              showConfirmModal(
+                "Confirm",
+                "確定要新增一筆嗎?",
+                "OK",
+                "Cancel",
+                () => {
+                  updateValidationFormList(values);
+                  message.success("新增成功!");
+                  setFormVisible(false);
+                }
+              );
+              break;
+            case FORM_MODE.EDIT:
+              showConfirmModal(
+                "Confirm",
+                "確定要保存修改嗎?",
+                "OK",
+                "Cancel",
+                () => {
+                  updateValidationFormList(values);
+                  message.success("修改成功!");
+                  setFormVisible(false);
+                }
+              );
+              break;
+            default:
+              break;
+          }
         }}
       >
         <Title>{title}</Title>
@@ -338,25 +386,15 @@ const ValidationFormInFormik = (props) => {
               justifyContent: "space-around",
             }}
           >
-            <Button
-              onClick={() => {
-                handleReset();
-              }}
-            >
-              Reset Form
-            </Button>
-            {
+            {formMode === FORM_MODE.ADD ? (
               <Button
                 onClick={() => {
-                  if (isValid) {
-                    submitForm(values);
-                  } else {
-                  }
+                  handleReset();
                 }}
               >
-                Test Save
+                Reset Form
               </Button>
-            }
+            ) : null}
           </div>
         </Form>
       </Modal>
