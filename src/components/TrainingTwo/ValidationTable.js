@@ -2,7 +2,7 @@ import { Button, Table, message, Typography } from "antd";
 import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
+import { FORM_MODE, GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
 import { MyContext } from "./TrainingTwo";
 const { Title } = Typography;
 const ValidationTable = () => {
@@ -11,6 +11,7 @@ const ValidationTable = () => {
     searchResultList,
     deleteValidationFormItem,
     showConfirmModal,
+    showForm,
   } = useContext(MyContext);
   const [tableDataSource, setTableDataSource] = useState([]);
   const [title, setTitle] = useState("全部資料");
@@ -56,6 +57,7 @@ const ValidationTable = () => {
             htmlType="button"
             onClick={() => {
               //onEditBtnClick(item.serialNumber);
+              showForm(FORM_MODE.EDIT, item.serialNumber);
             }}
           >
             Edit
@@ -102,6 +104,7 @@ const ValidationTable = () => {
     showConfirmModal,
     deleteValidationFormItem,
     searchResultList,
+    showForm,
   ]);
 
   const pagination = {

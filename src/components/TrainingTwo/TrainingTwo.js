@@ -17,6 +17,7 @@ const TrainingTwo = () => {
 
   const showForm = useCallback((mode, serialNumber) => {
     if (serialNumber) {
+      console.log(serialNumber);
       setFormTargerSerialNumber(serialNumber);
     } else {
       setFormTargerSerialNumber(null);
@@ -104,8 +105,11 @@ const TrainingTwo = () => {
   return (
     <MyContext.Provider
       value={{
+        formTargerSerialNumber,
         validationFormList,
         searchResultList,
+        formMode,
+        formVisible,
         updateValidationFormList,
         deleteValidationFormItem,
         showConfirmModal,
