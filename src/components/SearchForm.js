@@ -11,7 +11,7 @@ import {
   Col,
 } from "antd";
 import moment from "moment";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import {
   radioOption,
@@ -90,14 +90,28 @@ const SearchForm = (props) => {
     props.setAddFormTrigger(true);
   };
 
+
+  useEffect(() => {
+    if (!searchEndDateString) {
+      setSearchStartDateDefault(null);
+    } else {
+      setSearchStartDateDefault(searchEndDateString);
+    }
+  }, [searchEndDateString]);
+
+  useEffect(() => {
+    if (!searchStartDateString) {
+      setSearchEndDateDefault(null);
+    } else {
+      setSearchEndDateDefault(searchStartDateString);
+    }
+  }, [searchStartDateString]);
+
   // 日期禁能的功能與對應的預設日期設置
   let disabledDateForStart = (current) => {
     // Can not select days before today and today
     if (!searchEndDateString) {
-      setSearchStartDateDefault(null);
       return;
-    } else {
-      setSearchStartDateDefault(searchEndDateString);
     }
     return current && current > moment(searchEndDateString);
   };
@@ -105,10 +119,7 @@ const SearchForm = (props) => {
   // 日期禁能的功能與對應的預設日期設置
   let disabledDateForEnd = (current) => {
     if (!searchStartDateString) {
-      setSearchEndDateDefault(null);
       return;
-    } else {
-      setSearchEndDateDefault(searchStartDateString);
     }
     return current && current < moment(searchStartDateString);
   };

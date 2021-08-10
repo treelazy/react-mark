@@ -1,9 +1,7 @@
-import React, { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Modal } from "antd";
 import ValidationForm from "./ValidationForm";
 import ValidationTable from "./ValidationTable";
-import { useCallback } from "react";
 import ValidationSearch from "./ValidationSearch";
 import { FORM_MODE } from "./Constant";
 
@@ -17,7 +15,6 @@ const TrainingTwo = () => {
 
   const showForm = useCallback((mode, serialNumber) => {
     if (serialNumber) {
-      console.log(serialNumber);
       setFormTargerSerialNumber(serialNumber);
     } else {
       setFormTargerSerialNumber(null);

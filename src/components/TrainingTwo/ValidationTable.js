@@ -1,7 +1,5 @@
 import { Button, Table, message, Typography } from "antd";
-import React, { useContext } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { FORM_MODE, GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
 import { MyContext } from "./TrainingTwo";
 const { Title } = Typography;

@@ -1,7 +1,7 @@
 import React from "react";
 import { initTodoList } from "./redux/store";
 import { connect } from "react-redux";
-//import TrainingOne from "./components/TrainingOne";
+import TrainingOne from "./components/TrainingOne";
 import "antd/dist/antd.css";
 import TrainingTwo from "./components/TrainingTwo/TrainingTwo";
 
@@ -10,11 +10,11 @@ const App = (props) => {
     <div>
       {
         //TrainingOne
-        //<TrainingOne />
+        <TrainingOne />
       }
       {
         //TrainingTwo
-        <TrainingTwo />
+        //<TrainingTwo />
       }
     </div>
   );

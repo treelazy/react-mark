@@ -85,7 +85,6 @@ const ValidationSearch = () => {
                   <Button
                     onClick={() => {
                       updateSearchResultByCondition(props.values);
-                      console.log(props.values);
                     }}
                   >
                     Search

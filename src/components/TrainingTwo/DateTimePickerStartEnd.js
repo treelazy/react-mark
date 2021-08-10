@@ -1,15 +1,11 @@
 import React from "react";
 import { DatePicker, TimePicker, Form, Col } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import moment from "moment";
 import locale from "antd/es/date-picker/locale/zh_CN";
-import { useEffect } from "react";
 import { useFormikContext } from "formik";
 const DateTimePickerStartEnd = (props) => {
-  //const [startDate, setStartDate] = useState(null);
-  //const [startTime, setStartTime] = useState(null);
-  //const [endDate, setEndDate] = useState(null);
-  //const [endTime, setEndTime] = useState(null);
+
   const [startDateDefault, setStartDateDefault] = useState(null);
   const [endDateDefault, setEndDateDefault] = useState(null);
 

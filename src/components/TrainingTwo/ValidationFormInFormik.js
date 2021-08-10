@@ -17,10 +17,8 @@ import {
 import { getDescriptionLength } from "./validationSchema";
 import { FORM_COLOR_OPTION, FORM_MODE, GENDER_OPTION } from "./Constant";
 import DateTimePickerStartEnd from "./DateTimePickerStartEnd";
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { MyContext } from "./TrainingTwo";
-import { useState } from "react";
-import { useEffect } from "react";
 import { useFormikContext } from "formik";
 
 const { Title } = Typography;
