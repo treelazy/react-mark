@@ -4,35 +4,53 @@ import { useState } from "react";
 import moment from "moment";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import { useEffect } from "react";
+import { useFormikContext } from "formik";
 const DateTimePickerStartEnd = (props) => {
-  const [startDate, setStartDate] = useState(null);
-  const [startTime, setStartTime] = useState(null);
-  const [endDate, setEndDate] = useState(null);
-  const [endTime, setEndTime] = useState(null);
+  //const [startDate, setStartDate] = useState(null);
+  //const [startTime, setStartTime] = useState(null);
+  //const [endDate, setEndDate] = useState(null);
+  //const [endTime, setEndTime] = useState(null);
   const [startDateDefault, setStartDateDefault] = useState(null);
   const [endDateDefault, setEndDateDefault] = useState(null);
+
+  const { values, setFieldValue } = useFormikContext();
 
   let handleChange = (value, stateName) => {
     switch (stateName) {
       case "startDate":
-        setStartDate(value);
+        //setStartDate(value);
+        setFieldValue("startDate", value);
         break;
       case "endDate":
-        setEndDate(value);
+        //setEndDate(value);
+        setFieldValue("endDate", value);
         break;
       case "startTime":
-        setStartTime(value);
+        //setStartTime(value);
+        setFieldValue("startTime", value);
         break;
       case "endTime":
-        setEndTime(value);
+        //setEndTime(value);
+        setFieldValue("endTime", value);
         break;
       default:
     }
   };
-  const { setFieldValue } = props;
+
   useEffect(() => {
-    setFieldValue([startDate, startTime, endDate, endTime]);
-  }, [startDate, startTime, endDate, endTime, setFieldValue]);
+    setFieldValue("startEndDateTime", [
+      values.startDate,
+      values.startTime,
+      values.endDate,
+      values.endTime,
+    ]);
+  }, [
+    values.startDate,
+    values.startTime,
+    values.endDate,
+    values.endTime,
+    setFieldValue,
+  ]);
 
   let onPickerBlur = () => {
     if (props.onBlur) {
@@ -41,36 +59,36 @@ const DateTimePickerStartEnd = (props) => {
   };
 
   useEffect(() => {
-    if (!endDate) {
+    if (!values.endDate) {
       setStartDateDefault(null);
     } else {
-      setStartDateDefault(endDate);
+      setStartDateDefault(values.endDate);
     }
-  }, [endDate]);
+  }, [values.endDate]);
 
   useEffect(() => {
-    if (!startDate) {
+    if (!values.startDate) {
       setEndDateDefault(null);
     } else {
-      setEndDateDefault(startDate);
+      setEndDateDefault(values.startDate);
     }
-  }, [startDate]);
+  }, [values.startDate]);
 
   // 日期禁能的功能與對應的預設日期設置
   let disabledDateForStart = (current) => {
     // Can not select days before today and today
-    if (!endDate) {
+    if (!values.endDate) {
       return;
     }
-    return current && current > moment(endDate);
+    return current && current > moment(values.endDate);
   };
 
   // 日期禁能的功能與對應的預設日期設置
   let disabledDateForEnd = (current) => {
-    if (!startDate) {
+    if (!values.startDate) {
       return;
     }
-    return current && current < moment(startDate);
+    return current && current < moment(values.startDate);
   };
 
   const dateFormat = "YYYY-MM-DD";
@@ -84,7 +102,9 @@ const DateTimePickerStartEnd = (props) => {
           <DatePicker
             showToday={false}
             placeholder={datePlaceholder}
-            value={startDate ? moment(startDate, dateFormat) : null}
+            value={
+              values.startDate ? moment(values.startDate, dateFormat) : null
+            }
             format={dateFormat}
             locale={locale}
             onChange={(date, dateStr) => {
@@ -100,7 +120,9 @@ const DateTimePickerStartEnd = (props) => {
           />
           <TimePicker
             placeholder={timePlaceholder}
-            value={startTime ? moment(startTime, timeFormat) : null}
+            value={
+              values.startTime ? moment(values.startTime, timeFormat) : null
+            }
             format={timeFormat}
             locale={locale}
             onChange={(time, timeStr) => {
@@ -121,7 +143,7 @@ const DateTimePickerStartEnd = (props) => {
           <DatePicker
             showToday={false}
             placeholder={datePlaceholder}
-            value={endDate ? moment(endDate, dateFormat) : null}
+            value={values.endDate ? moment(values.endDate, dateFormat) : null}
             format={dateFormat}
             locale={locale}
             onChange={(date, dateStr) => {
@@ -137,7 +159,7 @@ const DateTimePickerStartEnd = (props) => {
           />
           <TimePicker
             placeholder={timePlaceholder}
-            value={endTime ? moment(endTime, timeFormat) : null}
+            value={values.endTime ? moment(values.endTime, timeFormat) : null}
             format={timeFormat}
             locale={locale}
             onChange={(time, timeStr) => {

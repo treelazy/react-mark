@@ -1,8 +1,18 @@
 import { Formik } from "formik";
-import { Form, Input, Row, Col, Switch, Select, Radio, Button } from "antd";
+import {
+  Form,
+  Input,
+  InputNumber,
+  Row,
+  Col,
+  Switch,
+  Select,
+  Radio,
+  Button,
+} from "antd";
 import React from "react";
 import { getDescriptionLength, valuesSchema } from "./validationSchema";
-import { FORM_COLOR_OPTION, SEX_OPTION } from "./Constant";
+import { FORM_COLOR_OPTION, GENDER_OPTION } from "./Constant";
 import DateTimePickerStartEnd from "./DateTimePickerStartEnd";
 import { useContext } from "react";
 import { MyContext } from "./TrainingTwo";
@@ -13,11 +23,16 @@ const ValidationForm = () => {
       serialNumber: "",
       organizationName: "",
       weight: "0",
+      price: 0,
       description: "",
       instruction: "",
       hasUpperLimit: false,
       upperLimit: "",
       color: [],
+      startDate: null,
+      startTime: null,
+      endDate: null,
+      endTime: null,
       startEndDateTime: [null, null, null, null],
       gender: 0,
     };
@@ -50,7 +65,7 @@ const ValidationForm = () => {
           return (
             <Form {...layout}>
               <Row justify="space-around" style={{ width: "100vw" }}>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item label="編號" required={true} colon={false}>
                     <div style={{ display: "inline-block" }}>
                       <Input
@@ -71,7 +86,7 @@ const ValidationForm = () => {
                     </div>
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item label="組織名稱" colon={false}>
                     <div style={{ display: "inline-block" }}>
                       <Input
@@ -92,7 +107,7 @@ const ValidationForm = () => {
                     </div>
                   </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={6}>
                   <Form.Item label="重量" colon={false}>
                     <div style={{ display: "inline-block" }}>
                       <Input
@@ -107,6 +122,27 @@ const ValidationForm = () => {
                       />
                       <label style={{ color: "red", fontSize: "0.5rem" }}>
                         {props.touched.weight ? props.errors.weight : null}
+                      </label>
+                    </div>
+                  </Form.Item>
+                </Col>
+                <Col span={6}>
+                  <Form.Item label="價格" colon={false} required={true}>
+                    <div style={{ display: "inline-block" }}>
+                      <InputNumber
+                        style={{ width: "10rem", display: "block" }}
+                        min={0}
+                        max={1000}
+                        precision={0}
+                        onChange={(value) => {
+                          props.setFieldValue("price", value, false);
+                        }}
+                        onBlur={props.handleBlur}
+                        value={props.values.price}
+                        name="price"
+                      />
+                      <label style={{ color: "red", fontSize: "0.5rem" }}>
+                        {props.touched.price ? props.errors.price : null}
                       </label>
                     </div>
                   </Form.Item>
@@ -235,10 +271,12 @@ const ValidationForm = () => {
               </Row>
               <Row justify="space-around" style={{ width: "100vw" }}>
                 <DateTimePickerStartEnd
+                  startDate={props.values.startDate}
+                  startTime={props.values.startTime}
+                  endDate={props.values.endDate}
+                  endTime={props.values.endTime}
                   value={props.values.startEndDateTime}
                   name="startEndDateTime"
-                  // 將設值的函式傳進去給裡面onchange用
-                  setFieldValue={props.setFieldValue}
                   errorMessage={
                     props.touched.startEndDateTime
                       ? props.errors.startEndDateTime
@@ -256,7 +294,7 @@ const ValidationForm = () => {
                       value={props.values.gender}
                       name="gender"
                     >
-                      {SEX_OPTION.map((val, id) => {
+                      {GENDER_OPTION.map((val, id) => {
                         return (
                           <Radio value={id} key={id}>
                             {val}
