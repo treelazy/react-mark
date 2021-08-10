@@ -22,6 +22,10 @@ export const valuesSchema = Yup.object().shape({
     }),
 });
 
+export const valuesSearchSchema = Yup.object().shape({
+    serialNumber: Yup.string().max(10, "請輸入1-10個半形數字").matches(/^[^ 　]+$/, "此欄位不支援空白").matches(/^[0-9]*$/, "請輸入半形數字"),
+});
+
 export function getDescriptionLength(descriptionStr) {
     const str = descriptionStr;
     var arr = str.match(/[^x00-xff]/ig);

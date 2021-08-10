@@ -1,23 +1,37 @@
-import { Button, Table, message } from "antd";
+import { Button, Table, message, Typography } from "antd";
 import React, { useContext } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
 import { MyContext } from "./TrainingTwo";
-
+const { Title } = Typography;
 const ValidationTable = () => {
-  const { validationFormList, deleteValidationFormItem, showConfirmModal } =
-    useContext(MyContext);
+  const {
+    validationFormList,
+    searchResultList,
+    deleteValidationFormItem,
+    showConfirmModal,
+  } = useContext(MyContext);
   const [tableDataSource, setTableDataSource] = useState([]);
-
+  const [title, setTitle] = useState("全部資料");
   useEffect(() => {
     let dataSource = [];
+    let targetList = null;
     if (!validationFormList) {
       return;
     }
+    targetList = validationFormList;
+    setTitle("全部資料");
+    if (searchResultList !== null) {
+      targetList = searchResultList;
+      setTitle("搜尋結果");
+      if (Object.keys(searchResultList).length === 0) {
+        setTitle("查無資料");
+      }
+    }
 
-    Object.keys(validationFormList).forEach((key, index) => {
-      let item = { ...validationFormList[key] };
+    Object.keys(targetList).forEach((key, index) => {
+      let item = { ...targetList[key] };
       let dataSourceItem = {};
       dataSourceItem.key = item.serialNumber;
       dataSourceItem.serialNumber = item.serialNumber;
@@ -83,7 +97,12 @@ const ValidationTable = () => {
       dataSource[index] = { ...dataSourceItem };
     });
     setTableDataSource(dataSource);
-  }, [validationFormList, showConfirmModal, deleteValidationFormItem]);
+  }, [
+    validationFormList,
+    showConfirmModal,
+    deleteValidationFormItem,
+    searchResultList,
+  ]);
 
   const pagination = {
     position: "top",
@@ -94,6 +113,7 @@ const ValidationTable = () => {
 
   return (
     <div>
+      <Title>{title}</Title>
       <Table
         pagination={pagination}
         dataSource={tableDataSource}

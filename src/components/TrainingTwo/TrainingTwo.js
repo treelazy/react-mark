@@ -4,10 +4,27 @@ import { Modal } from "antd";
 import ValidationForm from "./ValidationForm";
 import ValidationTable from "./ValidationTable";
 import { useCallback } from "react";
+import ValidationSearch from "./ValidationSearch";
+import { FORM_MODE } from "./Constant";
 
 export const MyContext = React.createContext();
 const TrainingTwo = () => {
+  const [formMode, setFormMode] = useState(FORM_MODE.ADD);
+  const [formVisible, setFormVisible] = useState(false);
   const [validationFormList, setValidationFormList] = useState(null);
+  const [searchResultList, setSearchResultList] = useState(null);
+  const [formTargerSerialNumber, setFormTargerSerialNumber] = useState(null);
+
+  const showForm = useCallback((mode, serialNumber) => {
+    if (serialNumber) {
+      setFormTargerSerialNumber(serialNumber);
+    } else {
+      setFormTargerSerialNumber(null);
+    }
+
+    setFormVisible(true);
+    setFormMode(mode);
+  }, []);
 
   const updateValidationFormList = useCallback(
     (itemData) => {
@@ -23,6 +40,32 @@ const TrainingTwo = () => {
       let list = { ...validationFormList };
       delete list[serialNumber];
       setValidationFormList(list);
+    },
+    [validationFormList]
+  );
+
+  const updateSearchResultByCondition = useCallback(
+    (condition) => {
+      setSearchResultList({});
+      const seachNumber = condition.serialNumber;
+      let tempSearchResult = {};
+      Object.keys(validationFormList).forEach((val) => {
+        let isSerialNumberOK = false;
+        let isGenderOK = false;
+
+        if (val.includes(seachNumber)) {
+          isSerialNumberOK = true;
+        }
+
+        if (condition.gender === validationFormList[val].gender) {
+          isGenderOK = true;
+        }
+
+        if (isSerialNumberOK && isGenderOK) {
+          tempSearchResult[val] = validationFormList[val];
+        }
+      });
+      setSearchResultList({ ...tempSearchResult });
     },
     [validationFormList]
   );
@@ -62,17 +105,28 @@ const TrainingTwo = () => {
     <MyContext.Provider
       value={{
         validationFormList,
+        searchResultList,
         updateValidationFormList,
         deleteValidationFormItem,
         showConfirmModal,
+        updateSearchResultByCondition,
+        setSearchResultList,
+        setFormMode,
+        setFormVisible,
+        showForm,
       }}
     >
       <div style={{ margin: "2rem" }}>
-        <ValidationForm />
+        <ValidationSearch />
         <br />
         <hr />
         <br />
         <ValidationTable />
+        <ValidationForm
+          formMode={formMode}
+          formVisible={formVisible}
+          formTargerSerialNumber={formTargerSerialNumber}
+        />
       </div>
     </MyContext.Provider>
   );
