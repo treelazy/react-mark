@@ -18,6 +18,8 @@ const TodoTable = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   let handleModalOk = null;
 
+  const { initTodoList } = props
+
   useEffect(() => {
     let todoListString = localStorage.getItem("todoListData");
     let todoList = null;
@@ -25,10 +27,10 @@ const TodoTable = (props) => {
       todoList = {};
     } else {
       todoList = JSON.parse(todoListString);
-      props.initTodoList(todoList);
+      initTodoList(todoList);
     }
-    return () => {};
-  });
+    return () => { };
+  }, [initTodoList]);
 
   useEffect(() => {
     if (props.searchResultList === null) {
@@ -83,8 +85,8 @@ const TodoTable = (props) => {
       obj["switchValue"] = obj["switchValue"] ? "已完成" : "未完成";
       obj["multipleSelectValue"] = obj["multipleSelectValue"].length
         ? obj["multipleSelectValue"].map((val) => {
-            return `${multipleSelectMap[val]} `;
-          })
+          return `${multipleSelectMap[val]} `;
+        })
         : "-";
 
       obj["key"] = index;

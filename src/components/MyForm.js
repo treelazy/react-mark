@@ -216,6 +216,7 @@ const MyForm = (props) => {
   };
 
   function showConfirmModal(confirmModalText) {
+    console.log('aaa');
     setConfirmModalVisibleFlag(true);
     setConfirmModalText(confirmModalText);
   }
@@ -307,8 +308,8 @@ const MyForm = (props) => {
               <label>
                 {multipleSelectValue.length > 0
                   ? multipleSelectValue.map((val) => {
-                      return `${multipleSelectMap[val]} `;
-                    })
+                    return `${multipleSelectMap[val]} `;
+                  })
                   : "-"}
               </label>
             ) : (

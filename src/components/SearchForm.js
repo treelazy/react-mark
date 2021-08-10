@@ -27,28 +27,30 @@ import {
 const { Title } = Typography;
 
 const SearchForm = (props) => {
-  const [searchInputTextValue, setSearchInputTextValue] = useState("");
-  const [searchSwitchValue, setSearchSwitchValue] = useState(false);
-  const [searchSelectValue, setSearchSelectValue] = useState(null);
-  const [searchRadioValue, setSearchRadioValue] = useState(null);
-  const [searchStartDateString, setSearchStartDateString] = useState(null);
-  const [searchEndDateString, setSearchEndDateString] = useState(null);
-  const [searchStartDateDefault, setSearchStartDateDefault] = useState(null);
-  const [searchEndDateDefault, setSearchEndDateDefault] = useState(null);
+  const [state, setState] = useState({
+    searchInputTextValue: "",
+    searchSwitchValue: false,
+    searchSelectValue: null,
+    searchRadioValue: null,
+    searchStartDateString: null,
+    searchEndDateString: null,
+    searchStartDateDefault: null,
+    searchEndDateDefault: null,
+  });
 
   let handleChange = (value, stateName) => {
     switch (stateName) {
       case "searchInputTextValue":
-        setSearchInputTextValue(value);
+        setState((state) => ({ ...state, searchInputTextValue: value }));
         break;
       case "searchSwitchValue":
-        setSearchSwitchValue(value);
+        setState((state) => ({ ...state, searchSwitchValue: value }));
         break;
       case "searchSelectValue":
-        setSearchSelectValue(value);
+        setState((state) => ({ ...state, searchSelectValue: value }));
         break;
       case "searchRadioValue":
-        setSearchRadioValue(value);
+        setState((state) => ({ ...state, searchRadioValue: value }));
         break;
       default:
     }
@@ -57,10 +59,10 @@ const SearchForm = (props) => {
   let handleDatePickerChange = (pickerType, date, dateString) => {
     switch (pickerType) {
       case SEARCH_DATE_PICKER_TYPE.START:
-        setSearchStartDateString(dateString);
+        setState((state) => ({ ...state, searchStartDateString: dateString }));
         break;
       case SEARCH_DATE_PICKER_TYPE.END:
-        setSearchEndDateString(dateString);
+        setState((state) => ({ ...state, searchStartDateString: dateString }));
         break;
       default:
         break;
@@ -68,6 +70,15 @@ const SearchForm = (props) => {
   };
 
   let onSearchBtnClick = () => {
+    const {
+      searchInputTextValue,
+      searchSwitchValue,
+      searchSelectValue,
+      searchRadioValue,
+      searchStartDateString,
+      searchEndDateString,
+    } = state;
+
     props.searchByCondition({
       searchInputTextValue,
       searchSwitchValue,
@@ -79,10 +90,10 @@ const SearchForm = (props) => {
   };
 
   let onResetBtnClick = () => {
-    setSearchInputTextValue("");
-    setSearchSwitchValue(false);
-    setSearchSelectValue(null);
-    setSearchRadioValue(null);
+    setState((state) => ({ ...state, searchInputTextValue: "" }));
+    setState((state) => ({ ...state, searchSwitchValue: false }));
+    setState((state) => ({ ...state, searchSelectValue: null }));
+    setState((state) => ({ ...state, searchRadioValue: null }));
     props.clearSearchResultList();
   };
 
@@ -90,38 +101,43 @@ const SearchForm = (props) => {
     props.setAddFormTrigger(true);
   };
 
+  useEffect(() => {
+    if (!state.searchEndDateString) {
+      setState((state) => ({ ...state, searchStartDateDefault: null }));
+    } else {
+      setState((state) => ({
+        ...state,
+        searchStartDateDefault: state.searchEndDateString,
+      }));
+    }
+  }, [state.searchEndDateString]);
 
   useEffect(() => {
-    if (!searchEndDateString) {
-      setSearchStartDateDefault(null);
+    if (!state.searchStartDateString) {
+      setState((state) => ({ ...state, searchEndDateDefault: null }));
     } else {
-      setSearchStartDateDefault(searchEndDateString);
+      setState((state) => ({
+        ...state,
+        searchEndDateDefault: state.searchStartDateString,
+      }));
     }
-  }, [searchEndDateString]);
-
-  useEffect(() => {
-    if (!searchStartDateString) {
-      setSearchEndDateDefault(null);
-    } else {
-      setSearchEndDateDefault(searchStartDateString);
-    }
-  }, [searchStartDateString]);
+  }, [state.searchStartDateString]);
 
   // 日期禁能的功能與對應的預設日期設置
   let disabledDateForStart = (current) => {
     // Can not select days before today and today
-    if (!searchEndDateString) {
+    if (!state.searchEndDateString) {
       return;
     }
-    return current && current > moment(searchEndDateString);
+    return current && current > moment(state.searchEndDateString);
   };
 
   // 日期禁能的功能與對應的預設日期設置
   let disabledDateForEnd = (current) => {
-    if (!searchStartDateString) {
+    if (!state.searchStartDateString) {
       return;
     }
-    return current && current < moment(searchStartDateString);
+    return current && current < moment(state.searchStartDateString);
   };
 
   const layout = {
@@ -138,7 +154,7 @@ const SearchForm = (props) => {
       <Form {...layout}>
         <Form.Item label="關鍵字" colon={false}>
           <Input
-            value={searchInputTextValue}
+            value={state.searchInputTextValue}
             onChange={(e) => {
               handleChange(e.target.value, "searchInputTextValue");
             }}
@@ -147,17 +163,17 @@ const SearchForm = (props) => {
         <Form.Item label="時間範圍" colon={false}>
           <DatePicker
             defaultPickerValue={
-              searchStartDateDefault === null
+              state.searchStartDateDefault === null
                 ? null
-                : moment(searchStartDateDefault)
+                : moment(state.searchStartDateDefault)
             }
             placeholder="開始日期"
             format="YYYY-MM-DD"
             locale={locale}
             disabledDate={disabledDateForStart}
             value={
-              searchStartDateString
-                ? moment(searchStartDateString, "YYYY-MM-DD")
+              state.searchStartDateString
+                ? moment(state.searchStartDateString, "YYYY-MM-DD")
                 : null
             }
             onChange={(date, dateString) => {
@@ -171,17 +187,17 @@ const SearchForm = (props) => {
           &nbsp;&nbsp;&nbsp;
           <DatePicker
             defaultPickerValue={
-              searchEndDateDefault === null
+              state.searchEndDateDefault === null
                 ? null
-                : moment(searchEndDateDefault)
+                : moment(state.searchEndDateDefault)
             }
             placeholder="結束日期"
             format="YYYY-MM-DD"
             locale={locale}
             disabledDate={disabledDateForEnd}
             value={
-              searchEndDateString
-                ? moment(searchEndDateString, "YYYY-MM-DD")
+              state.searchEndDateString
+                ? moment(state.searchEndDateString, "YYYY-MM-DD")
                 : null
             }
             onChange={(date, dateString) => {
@@ -195,7 +211,7 @@ const SearchForm = (props) => {
         </Form.Item>
         <Form.Item label="是否完成" colon={false}>
           <Switch
-            checked={searchSwitchValue}
+            checked={state.searchSwitchValue}
             onChange={(val) => {
               handleChange(val, "searchSwitchValue");
             }}
@@ -203,7 +219,7 @@ const SearchForm = (props) => {
         </Form.Item>
         <Form.Item label="緊急程度" colon={false}>
           <Select
-            value={searchSelectValue}
+            value={state.searchSelectValue}
             onChange={(val) => {
               handleChange(val, "searchSelectValue");
             }}
@@ -222,7 +238,7 @@ const SearchForm = (props) => {
             onChange={(e) => {
               handleChange(e.target.value, "searchRadioValue");
             }}
-            value={searchRadioValue}
+            value={state.searchRadioValue}
           >
             {radioOption.map((val) => {
               return (

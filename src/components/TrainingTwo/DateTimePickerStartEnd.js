@@ -14,19 +14,15 @@ const DateTimePickerStartEnd = (props) => {
   let handleChange = (value, stateName) => {
     switch (stateName) {
       case "startDate":
-        //setStartDate(value);
         setFieldValue("startDate", value);
         break;
       case "endDate":
-        //setEndDate(value);
         setFieldValue("endDate", value);
         break;
       case "startTime":
-        //setStartTime(value);
         setFieldValue("startTime", value);
         break;
       case "endTime":
-        //setEndTime(value);
         setFieldValue("endTime", value);
         break;
       default:
