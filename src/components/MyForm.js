@@ -38,24 +38,26 @@ const MyForm = (props) => {
     3: "檢視事項",
   });
 
-  const [uuid, setUuid] = useState(null);
-  const [inputTextValue, setInputTextValue] = useState("");
-  const [selectValue, setSelectValue] = useState(null);
-  const [multipleSelectValue, setMultipleSelectValue] = useState([]);
-  const [radioValue, setRadioValue] = useState(null);
-  const [datePickerString, setDatePickerString] = useState(null);
-  const [timePickerString, setTimePickerString] = useState(null);
-  const [switchValue, setSwitchValue] = useState(false);
-  const [confirmModalText, setConfirmModalText] = useState("");
-  const [confirmModalVisibleFlag, setConfirmModalVisibleFlag] = useState(false);
-  const [formModalVisible, setFormModalVisible] = useState(false);
-  const [formOKText, setFormOKText] = useState("");
-  const [formMode, setFormMode] = useState(FORM_MODE.ADD);
+  const [state, setState] = useState({
+    uuid: null,
+    inputTextValue: "",
+    selectValue: null,
+    multipleSelectValue: [],
+    radioValue: null,
+    datePickerString: null,
+    timePickerString: null,
+    switchValue: false,
+    confirmModalText: "",
+    confirmModalVisibleFlag: false,
+    formModalVisible: false,
+    formOKText: "",
+    formMode: FORM_MODE.ADD,
+  });
 
   useEffect(() => {
     if (props.showEditFormTrigger) {
       props.setEditFormTrigger(false);
-      setFormMode(FORM_MODE.EDIT);
+      setState((state) => ({ ...state, formMode: FORM_MODE.EDIT }));
       // 將所有資料都直接投射到state
       let {
         uuid,
@@ -67,34 +69,35 @@ const MyForm = (props) => {
         timePickerString,
         switchValue,
       } = props.todoList[props.uuidFromTable];
-      setUuid(uuid);
-      setInputTextValue(inputTextValue);
-      setSelectValue(selectValue);
-      setMultipleSelectValue(multipleSelectValue);
-      setRadioValue(radioValue);
-      setDatePickerString(datePickerString);
-      setTimePickerString(timePickerString);
-      setSwitchValue(switchValue);
-      setFormModalVisible(true);
-      setFormOKText("Save");
+
+      setState((state) => ({ ...state, uuid }));
+      setState((state) => ({ ...state, inputTextValue }));
+      setState((state) => ({ ...state, selectValue }));
+      setState((state) => ({ ...state, multipleSelectValue }));
+      setState((state) => ({ ...state, radioValue }));
+      setState((state) => ({ ...state, datePickerString }));
+      setState((state) => ({ ...state, timePickerString }));
+      setState((state) => ({ ...state, switchValue }));
+      setState((state) => ({ ...state, formModalVisible: true }));
+      setState((state) => ({ ...state, formOKText: "Save" }));
     }
   }, [props.showEditFormTrigger, props]);
 
   useEffect(() => {
     if (props.showAddFormTrigger) {
       props.setAddFormTrigger(false);
-      setFormMode(FORM_MODE.ADD);
+      setState((state) => ({ ...state, formMode: FORM_MODE.ADD }));
       props.setUuidFromTable("");
       resetAllInput();
-      setFormModalVisible(true);
-      setFormOKText("Add");
+      setState((state) => ({ ...state, formModalVisible: true }));
+      setState((state) => ({ ...state, formOKText: "Add" }));
     }
   }, [props.showAddFormTrigger, props]);
 
   useEffect(() => {
     if (props.showViewFormTrigger) {
       props.setViewFormTrigger(false);
-      setFormMode(FORM_MODE.VIEW);
+      setState((state) => ({ ...state, formMode: FORM_MODE.VIEW }));
       let {
         uuid,
         inputTextValue,
@@ -105,16 +108,17 @@ const MyForm = (props) => {
         timePickerString,
         switchValue,
       } = props.todoList[props.uuidFromTable];
-      setUuid(uuid);
-      setInputTextValue(inputTextValue);
-      setSelectValue(selectValue);
-      setMultipleSelectValue(multipleSelectValue);
-      setRadioValue(radioValue);
-      setDatePickerString(datePickerString);
-      setTimePickerString(timePickerString);
-      setSwitchValue(switchValue);
-      setFormModalVisible(true);
-      setFormOKText("OK");
+
+      setState((state) => ({ ...state, uuid }));
+      setState((state) => ({ ...state, inputTextValue }));
+      setState((state) => ({ ...state, selectValue }));
+      setState((state) => ({ ...state, multipleSelectValue }));
+      setState((state) => ({ ...state, radioValue }));
+      setState((state) => ({ ...state, datePickerString }));
+      setState((state) => ({ ...state, timePickerString }));
+      setState((state) => ({ ...state, switchValue }));
+      setState((state) => ({ ...state, formModalVisible: true }));
+      setState((state) => ({ ...state, formOKText: "OK" }));
     }
   }, [props.showViewFormTrigger, props]);
 
@@ -130,30 +134,7 @@ const MyForm = (props) => {
   }
 
   let handleChange = (value, stateName) => {
-    switch (stateName) {
-      case "inputTextValue":
-        setInputTextValue(value);
-        break;
-      case "selectValue":
-        setSelectValue(value);
-        break;
-      case "multipleSelectValue":
-        setMultipleSelectValue(value);
-        break;
-      case "radioValue":
-        setRadioValue(value);
-        break;
-      case "datePickerString":
-        setDatePickerString(value);
-        break;
-      case "timePickerString":
-        setTimePickerString(value);
-        break;
-      case "switchValue":
-        setSwitchValue(value);
-        break;
-      default:
-    }
+    setState((state) => ({ ...state, [stateName]: value }));
   };
 
   let onResetBtnClick = () => {
@@ -166,6 +147,17 @@ const MyForm = (props) => {
 
   let submitData = () => {
     let uuid = uuidv4();
+
+    let {
+      inputTextValue,
+      selectValue,
+      multipleSelectValue,
+      radioValue,
+      datePickerString,
+      timePickerString,
+      switchValue,
+    } = state;
+
     let todoListItem = {
       uuid,
       inputTextValue,
@@ -186,6 +178,17 @@ const MyForm = (props) => {
   };
 
   let saveData = () => {
+    let {
+      uuid,
+      inputTextValue,
+      selectValue,
+      multipleSelectValue,
+      radioValue,
+      datePickerString,
+      timePickerString,
+      switchValue,
+    } = state;
+
     props.updateTodoList({
       uuid,
       inputTextValue,
@@ -201,28 +204,27 @@ const MyForm = (props) => {
   };
 
   let resetAllInput = () => {
-    setUuid("");
-    setInputTextValue("");
-    setSelectValue(null);
-    setMultipleSelectValue([]);
-    setRadioValue(null);
-    setDatePickerString(null);
-    setTimePickerString(null);
-    setSwitchValue(false);
+    setState((state) => ({ ...state, uuid: "" }));
+    setState((state) => ({ ...state, inputTextValue: "" }));
+    setState((state) => ({ ...state, selectValue: null }));
+    setState((state) => ({ ...state, multipleSelectValue: [] }));
+    setState((state) => ({ ...state, radioValue: null }));
+    setState((state) => ({ ...state, datePickerString: null }));
+    setState((state) => ({ ...state, timePickerString: null }));
+    setState((state) => ({ ...state, switchValue: false }));
   };
 
   let handleConfirmModalCancel = () => {
-    setConfirmModalVisibleFlag(false);
+    setState((state) => ({ ...state, confirmModalVisibleFlag: false }));
   };
 
   function showConfirmModal(confirmModalText) {
-    console.log('aaa');
-    setConfirmModalVisibleFlag(true);
-    setConfirmModalText(confirmModalText);
+    setState((state) => ({ ...state, confirmModalVisibleFlag: true }));
+    setState((state) => ({ ...state, confirmModalText }));
   }
 
   let hideMyForm = () => {
-    setFormModalVisible(false);
+    setState((state) => ({ ...state, formModalVisible: false }));
   };
 
   const layout = {
@@ -236,11 +238,11 @@ const MyForm = (props) => {
 
   return (
     <Modal
-      title={TITLE_TEXT[formMode]}
-      visible={formModalVisible}
-      okText={formOKText}
+      title={TITLE_TEXT[state.formMode]}
+      visible={state.formModalVisible}
+      okText={state.formOKText}
       onOk={() => {
-        switch (formMode) {
+        switch (state.formMode) {
           case FORM_MODE.EDIT:
             onSaveBtnClick();
             break;
@@ -260,11 +262,11 @@ const MyForm = (props) => {
       <div>
         <Form {...layout}>
           <Form.Item label="事件名稱" colon={false}>
-            {formMode === FORM_MODE.VIEW ? (
-              <label>{inputTextValue}</label>
+            {state.formMode === FORM_MODE.VIEW ? (
+              <label>{state.inputTextValue}</label>
             ) : (
               <Input
-                value={inputTextValue}
+                value={state.inputTextValue}
                 onChange={(e) => {
                   handleChange(e.target.value, "inputTextValue");
                 }}
@@ -272,12 +274,14 @@ const MyForm = (props) => {
             )}
           </Form.Item>
           <Form.Item label="緊急程度" colon={false}>
-            {formMode === FORM_MODE.VIEW ? (
-              <label>{selectValue ? priorityMap[selectValue] : "-"}</label>
+            {state.formMode === FORM_MODE.VIEW ? (
+              <label>
+                {state.selectValue ? priorityMap[state.selectValue] : "-"}
+              </label>
             ) : (
               <Select
-                disabled={formMode === FORM_MODE.VIEW}
-                value={selectValue}
+                disabled={state.formMode === FORM_MODE.VIEW}
+                value={state.selectValue}
                 onChange={(val) => {
                   handleChange(val, "selectValue");
                 }}
@@ -304,20 +308,20 @@ const MyForm = (props) => {
               },
             ]}
           >
-            {formMode === FORM_MODE.VIEW ? (
+            {state.formMode === FORM_MODE.VIEW ? (
               <label>
-                {multipleSelectValue.length > 0
-                  ? multipleSelectValue.map((val) => {
-                    return `${multipleSelectMap[val]} `;
-                  })
+                {state.multipleSelectValue.length > 0
+                  ? state.multipleSelectValue.map((val) => {
+                      return `${multipleSelectMap[val]} `;
+                    })
                   : "-"}
               </label>
             ) : (
               <Select
-                disabled={formMode === FORM_MODE.VIEW}
+                disabled={state.formMode === FORM_MODE.VIEW}
                 mode="multiple"
                 placeholder="Please select favourite colors"
-                value={multipleSelectValue}
+                value={state.multipleSelectValue}
                 onChange={(val) => {
                   handleChange(val, "multipleSelectValue");
                 }}
@@ -333,15 +337,17 @@ const MyForm = (props) => {
             )}
           </Form.Item>
           <Form.Item label="喜好" colon={false}>
-            {formMode === FORM_MODE.VIEW ? (
-              <label>{radioValue ? likeMap[radioValue] : "-"}</label>
+            {state.formMode === FORM_MODE.VIEW ? (
+              <label>
+                {state.radioValue ? likeMap[state.radioValue] : "-"}
+              </label>
             ) : (
               <Radio.Group
-                disabled={formMode === FORM_MODE.VIEW}
+                disabled={state.formMode === FORM_MODE.VIEW}
                 onChange={(e) => {
                   handleChange(e.target.value, "radioValue");
                 }}
-                value={radioValue}
+                value={state.radioValue}
               >
                 {radioOption.map((val) => {
                   return (
@@ -354,14 +360,16 @@ const MyForm = (props) => {
             )}
           </Form.Item>
           <Form.Item label="日期" colon={false}>
-            {formMode === FORM_MODE.VIEW ? (
-              <label>{datePickerString ? datePickerString : "-"}</label>
+            {state.formMode === FORM_MODE.VIEW ? (
+              <label>
+                {state.datePickerString ? state.datePickerString : "-"}
+              </label>
             ) : (
               <DatePicker
-                disabled={formMode === FORM_MODE.VIEW}
+                disabled={state.formMode === FORM_MODE.VIEW}
                 value={
-                  datePickerString
-                    ? moment(datePickerString, "YYYY-MM-DD")
+                  state.datePickerString
+                    ? moment(state.datePickerString, "YYYY-MM-DD")
                     : null
                 }
                 format="YYYY-MM-DD"
@@ -373,16 +381,20 @@ const MyForm = (props) => {
             )}
           </Form.Item>
           <Form.Item label="時間" colon={false}>
-            {formMode === FORM_MODE.VIEW ? (
-              <label>{timePickerString ? timePickerString : "-"}</label>
+            {state.formMode === FORM_MODE.VIEW ? (
+              <label>
+                {state.timePickerString ? state.timePickerString : "-"}
+              </label>
             ) : (
               <TimePicker
-                disabled={formMode === FORM_MODE.VIEW}
+                disabled={state.formMode === FORM_MODE.VIEW}
                 onChange={(time, timeString) => {
                   handleChange(timeString, "timePickerString");
                 }}
                 value={
-                  timePickerString ? moment(timePickerString, "HH:mm") : null
+                  state.timePickerString
+                    ? moment(state.timePickerString, "HH:mm")
+                    : null
                 }
                 format="HH:mm"
               />
@@ -390,20 +402,19 @@ const MyForm = (props) => {
           </Form.Item>
 
           <Form.Item label="是否完成" colon={false}>
-            {formMode === FORM_MODE.VIEW ? (
-              <label>{switchValue ? "已完成" : "未完成"}</label>
+            {state.formMode === FORM_MODE.VIEW ? (
+              <label>{state.switchValue ? "已完成" : "未完成"}</label>
             ) : (
               <Switch
-                disabled={formMode === FORM_MODE.VIEW}
-                checked={switchValue}
+                disabled={state.formMode === FORM_MODE.VIEW}
+                checked={state.switchValue}
                 onChange={(val) => {
-                  console.log(props.showEditFormTrigger);
                   handleChange(val, "switchValue");
                 }}
               />
             )}
           </Form.Item>
-          {formMode === FORM_MODE.ADD ? (
+          {state.formMode === FORM_MODE.ADD ? (
             <div>
               <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 8 }}>
                 <Button htmlType="button" onClick={onResetBtnClick}>
@@ -416,10 +427,10 @@ const MyForm = (props) => {
 
         <Modal
           title="Confirm"
-          visible={confirmModalVisibleFlag}
+          visible={state.confirmModalVisibleFlag}
           onOk={() => {
-            setConfirmModalVisibleFlag(false);
-            switch (formMode) {
+            setState((state) => ({ ...state, confirmModalVisibleFlag: false }));
+            switch (state.formMode) {
               case FORM_MODE.EDIT:
                 saveData();
                 break;
@@ -431,7 +442,7 @@ const MyForm = (props) => {
           }}
           onCancel={handleConfirmModalCancel}
         >
-          <p>{confirmModalText}</p>
+          <p>{state.confirmModalText}</p>
         </Modal>
       </div>
     </Modal>
