@@ -79,6 +79,31 @@ const ValidationFormInFormik = (props) => {
         );
         setFieldValue("gender", validationFormList[id].gender);
         break;
+      case FORM_MODE.VIEW:
+        setTitle("編輯資料");
+        let viewID = formTargerSerialNumber;
+        setFieldValue("serialNumber", validationFormList[viewID].serialNumber);
+        setFieldValue(
+          "organizationName",
+          validationFormList[viewID].organizationName
+        );
+        setFieldValue("weight", validationFormList[viewID].weight);
+        setFieldValue("price", validationFormList[viewID].price);
+        setFieldValue("description", validationFormList[viewID].description);
+        setFieldValue("instruction", validationFormList[viewID].instruction);
+        setFieldValue("hasUpperLimit", validationFormList[viewID].hasUpperLimit);
+        setFieldValue("upperLimit", validationFormList[viewID].upperLimit);
+        setFieldValue("color", validationFormList[viewID].color);
+        setFieldValue("startDate", validationFormList[viewID].startDate);
+        setFieldValue("startTime", validationFormList[viewID].startTime);
+        setFieldValue("endDate", validationFormList[viewID].endDate);
+        setFieldValue("endTime", validationFormList[viewID].endTime);
+        setFieldValue(
+          "startEndDateTime",
+          validationFormList[viewID].startEndDateTime
+        );
+        setFieldValue("gender", validationFormList[viewID].gender);
+        break;
       default:
         break;
     }
@@ -149,16 +174,20 @@ const ValidationFormInFormik = (props) => {
             <Col span={6}>
               <Form.Item label="編號" required={true} colon={false}>
                 <div style={{ display: "inline-block" }}>
-                  <Input
-                    style={{ width: "12rem", display: "block" }}
-                    type="text"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.serialNumber}
-                    name="serialNumber"
-                    placeholder="請輸入"
-                    suffix={`${values.serialNumber.length}/10`}
-                  />
+                  {(formMode === FORM_MODE.ADD) ?
+                    <Input
+                      disabled={values.isEditMode}
+                      readOnly={formMode === FORM_MODE.VIEW}
+                      style={{ width: "12rem", display: "block" }}
+                      type="text"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.serialNumber}
+                      name="serialNumber"
+                      placeholder="請輸入"
+                      suffix={`${values.serialNumber.length}/10`}
+                    /> : <label>{values.serialNumber}</label>
+                  }
                   <label style={{ color: "red", fontSize: "0.5rem" }}>
                     {touched.serialNumber ? errors.serialNumber : null}
                   </label>
@@ -169,6 +198,7 @@ const ValidationFormInFormik = (props) => {
               <Form.Item label="組織名稱" colon={false}>
                 <div style={{ display: "inline-block" }}>
                   <Input
+                    readOnly={formMode === FORM_MODE.VIEW}
                     style={{ width: "15rem", display: "block" }}
                     type="text"
                     onChange={handleChange}
@@ -188,6 +218,7 @@ const ValidationFormInFormik = (props) => {
               <Form.Item label="重量" colon={false}>
                 <div style={{ display: "inline-block" }}>
                   <Input
+                    readOnly={formMode === FORM_MODE.VIEW}
                     style={{ width: "10rem", display: "block" }}
                     type="text"
                     onChange={handleChange}
@@ -207,6 +238,7 @@ const ValidationFormInFormik = (props) => {
               <Form.Item label="價格" colon={false} required={true}>
                 <div style={{ display: "inline-block" }}>
                   <InputNumber
+                    readOnly={formMode === FORM_MODE.VIEW}
                     style={{ width: "10rem", display: "block" }}
                     min={0}
                     max={1000}
@@ -230,6 +262,7 @@ const ValidationFormInFormik = (props) => {
               <Form.Item required={true} label="描述" colon={false}>
                 <div style={{ display: "inline-block" }}>
                   <Input.TextArea
+                    readOnly={formMode === FORM_MODE.VIEW}
                     style={{ width: "60vw", height: "30vh" }}
                     onChange={handleChange}
                     onBlur={handleBlur}
@@ -253,6 +286,7 @@ const ValidationFormInFormik = (props) => {
               <Form.Item label="使用方式" colon={false}>
                 <div style={{ display: "inline-block" }}>
                   <Input
+                    readOnly={formMode === FORM_MODE.VIEW}
                     style={{ width: "15rem", display: "block" }}
                     type="text"
                     onChange={handleChange}
@@ -275,30 +309,33 @@ const ValidationFormInFormik = (props) => {
                 required={values.hasUpperLimit}
               >
                 <div style={{ display: "inline-block" }}>
-                  <Switch
-                    style={{ display: "inline" }}
-                    onChange={(value) => {
-                      setFieldValue("hasUpperLimit", value, false);
-                      if (!value) {
-                        setFieldValue("upperLimit", "", false);
-                      }
-                    }}
-                    onBlur={handleBlur}
-                    checked={values.hasUpperLimit}
-                    value={values.hasUpperLimit}
-                  />
-                  &nbsp;&nbsp;&nbsp;
-                  <Input
-                    style={{ width: "12rem" }}
-                    type="text"
-                    disabled={!values.hasUpperLimit}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.upperLimit}
-                    name="upperLimit"
-                    placeholder={values.hasUpperLimit ? "請輸入" : ""}
-                    suffix={`${values.upperLimit.length}/10`}
-                  />
+                  {formMode !== FORM_MODE.VIEW ? <>
+                    <Switch
+                      style={{ display: "inline" }}
+                      onChange={(value) => {
+                        setFieldValue("hasUpperLimit", value, false);
+                        if (!value) {
+                          setFieldValue("upperLimit", "", false);
+                        }
+                      }}
+                      onBlur={handleBlur}
+                      checked={values.hasUpperLimit}
+                      value={values.hasUpperLimit}
+                    />
+                    &nbsp;&nbsp;&nbsp;
+                    <Input
+                      style={{ width: "12rem" }}
+                      type="text"
+                      disabled={!values.hasUpperLimit}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.upperLimit}
+                      name="upperLimit"
+                      placeholder={values.hasUpperLimit ? "請輸入" : ""}
+                      suffix={`${values.upperLimit.length}/10`}
+                    />
+                  </> : <label>{values.upperLimit ? values.upperLimit : '-'}</label>}
+
                   <label style={{ color: "red", fontSize: "0.5rem" }}>
                     {values.hasUpperLimit
                       ? touched.upperLimit
@@ -311,7 +348,7 @@ const ValidationFormInFormik = (props) => {
             </Col>
             <Col span={8}>
               <Form.Item label="顏色" colon={false} required={true}>
-                <div style={{ display: "inline-block" }}>
+                {formMode !== FORM_MODE.VIEW ? <div style={{ display: "inline-block" }}>
                   <Select
                     style={{ width: "8rem" }}
                     mode="multiple"
@@ -338,12 +375,13 @@ const ValidationFormInFormik = (props) => {
                   <label style={{ color: "red", fontSize: "0.5rem" }}>
                     {touched.color ? errors.color : null}
                   </label>
-                </div>
+                </div> : <label>{values.color.map((val) => `${FORM_COLOR_OPTION[val]} `)}</label>}
               </Form.Item>
             </Col>
           </Row>
           <Row justify="space-around" style={{ width: "100vw" }}>
             <DateTimePickerStartEnd
+              disabled={formMode === FORM_MODE.VIEW}
               startDate={values.startDate}
               startTime={values.startTime}
               endDate={values.endDate}

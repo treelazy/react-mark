@@ -1,6 +1,6 @@
 import { Button, Table, message, Typography } from "antd";
 import React, { useContext, useState, useEffect } from "react";
-import { FORM_MODE, GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
+import { FORM_COLOR_OPTION, FORM_MODE, GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
 import { MyContext } from "./TrainingTwo";
 const { Title } = Typography;
 const ValidationTable = () => {
@@ -39,12 +39,12 @@ const ValidationTable = () => {
         : "-";
       dataSourceItem.weight = item.weight ? item.weight : "-";
       dataSourceItem.price = item.price;
-      dataSourceItem.description = item.description ? item.description : "-";
+      dataSourceItem.description = item.description ? (item.description.length > 3 ? `${item.description.substring(0, 3)}...` : item.description) : "-";
       dataSourceItem.instruction = item.instruction ? item.instruction : "-";
       dataSourceItem.upperLimit = item.hasUpperLimit
-        ? dataSourceItem.upperLimit
+        ? item.upperLimit
         : "-";
-      dataSourceItem.color = item.color.length > 0 ? item.color : "-";
+      dataSourceItem.color = item.color.length > 0 ? item.color.map((val) => `${FORM_COLOR_OPTION[val]} `) : "-";
       dataSourceItem.startDateTime = `${item.startEndDateTime[0]} ${item.startEndDateTime[1]}`;
       dataSourceItem.endDateTime = `${item.startEndDateTime[2]} ${item.startEndDateTime[3]}`;
       dataSourceItem.gender = GENDER_OPTION[item.gender];
@@ -54,7 +54,6 @@ const ValidationTable = () => {
             id={item.serialNumber}
             htmlType="button"
             onClick={() => {
-              //onEditBtnClick(item.serialNumber);
               showForm(FORM_MODE.EDIT, item.serialNumber);
             }}
           >
@@ -66,6 +65,7 @@ const ValidationTable = () => {
             htmlType="button"
             onClick={() => {
               //onViewBtnClick(item.serialNumber);
+              showForm(FORM_MODE.VIEW, item.serialNumber)
             }}
           >
             View

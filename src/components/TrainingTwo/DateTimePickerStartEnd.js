@@ -92,6 +92,7 @@ const DateTimePickerStartEnd = (props) => {
       <Col span={8}>
         <Form.Item label="開始時間" colon={false} required={true}>
           <DatePicker
+            disabled={props.disabled}
             showToday={false}
             placeholder={datePlaceholder}
             value={
@@ -111,6 +112,7 @@ const DateTimePickerStartEnd = (props) => {
             }
           />
           <TimePicker
+            disabled={props.disabled}
             placeholder={timePlaceholder}
             value={
               values.startTime ? moment(values.startTime, timeFormat) : null
@@ -133,6 +135,7 @@ const DateTimePickerStartEnd = (props) => {
       <Col span={8}>
         <Form.Item label="結束時間" colon={false} required={true}>
           <DatePicker
+            disabled={props.disabled}
             showToday={false}
             placeholder={datePlaceholder}
             value={values.endDate ? moment(values.endDate, dateFormat) : null}
@@ -150,6 +153,7 @@ const DateTimePickerStartEnd = (props) => {
             }
           />
           <TimePicker
+            disabled={props.disabled}
             placeholder={timePlaceholder}
             value={values.endTime ? moment(values.endTime, timeFormat) : null}
             format={timeFormat}
