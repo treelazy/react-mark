@@ -80,7 +80,7 @@ const ValidationFormInFormik = (props) => {
         setFieldValue("gender", validationFormList[id].gender);
         break;
       case FORM_MODE.VIEW:
-        setTitle("編輯資料");
+        setTitle("檢視資料");
         let viewID = formTargerSerialNumber;
         setFieldValue("serialNumber", validationFormList[viewID].serialNumber);
         setFieldValue(
@@ -128,6 +128,12 @@ const ValidationFormInFormik = (props) => {
           setFormVisible(false);
         }}
         onOk={() => {
+
+          if (formMode === FORM_MODE.VIEW) {
+            setFormVisible(false);
+            return;
+          }
+
           if (!isValid) {
             //驗證欄位是否有誤, 設定所有touched, 讓它顯示警告
             validateForm().then((errors) =>
@@ -398,7 +404,7 @@ const ValidationFormInFormik = (props) => {
 
             <Col span={8}>
               <Form.Item label="性別" colon={false} required={true}>
-                <Radio.Group
+                {formMode !== FORM_MODE.VIEW ? <Radio.Group
                   onChange={handleChange}
                   value={values.gender}
                   name="gender"
@@ -410,7 +416,7 @@ const ValidationFormInFormik = (props) => {
                       </Radio>
                     );
                   })}
-                </Radio.Group>
+                </Radio.Group> : <label>{GENDER_OPTION[values.gender]}</label>}
               </Form.Item>
             </Col>
           </Row>
