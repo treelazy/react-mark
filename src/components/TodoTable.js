@@ -44,23 +44,23 @@ const TodoTable = (props) => {
     }
   }, [props.searchResultList]);
 
-  let onEditBtnClick = (uuid) => {
+  const onEditBtnClick = (uuid) => {
     props.setUuidFromTable(uuid);
     props.setEditFormTrigger(true);
   };
 
-  let onDeleteBtnClick = (uuid) => {
+  const onDeleteBtnClick = (uuid) => {
     showModal("確定要刪除該筆資料嗎?", () => {
       props.deleteTodoListItem(uuid);
     });
   };
 
-  let onViewBtnClick = (uuid) => {
+  const onViewBtnClick = (uuid) => {
     props.setUuidFromTable(uuid);
     props.setViewFormTrigger(true);
   };
 
-  let getDataSource = () => {
+  const getDataSource = () => {
     let tableTodoList = {};
     if (props.searchResultList === null) {
       tableTodoList = props.todoList;

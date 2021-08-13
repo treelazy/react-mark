@@ -126,7 +126,7 @@ const MyForm = (props) => {
     return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
       /[xy]/g,
       function (c) {
-        var r = (Math.random() * 16) | 0,
+        let r = (Math.random() * 16) | 0,
           v = c === "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       }
@@ -312,8 +312,8 @@ const MyForm = (props) => {
               <label>
                 {state.multipleSelectValue.length > 0
                   ? state.multipleSelectValue.map((val) => {
-                      return `${multipleSelectMap[val]} `;
-                    })
+                    return `${multipleSelectMap[val]} `;
+                  })
                   : "-"}
               </label>
             ) : (

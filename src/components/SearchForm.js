@@ -69,7 +69,7 @@ const SearchForm = (props) => {
     }
   };
 
-  let onSearchBtnClick = () => {
+  const onSearchBtnClick = () => {
     const {
       searchInputTextValue,
       searchSwitchValue,
@@ -89,7 +89,7 @@ const SearchForm = (props) => {
     });
   };
 
-  let onResetBtnClick = () => {
+  const onResetBtnClick = () => {
     setState((state) => ({ ...state, searchInputTextValue: "" }));
     setState((state) => ({ ...state, searchSwitchValue: false }));
     setState((state) => ({ ...state, searchSelectValue: null }));
@@ -97,7 +97,7 @@ const SearchForm = (props) => {
     props.clearSearchResultList();
   };
 
-  let onAddBtnClick = () => {
+  const onAddBtnClick = () => {
     props.setAddFormTrigger(true);
   };
 

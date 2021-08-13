@@ -44,7 +44,7 @@ const DateTimePickerStartEnd = (props) => {
     setFieldValue,
   ]);
 
-  let onPickerBlur = () => {
+  const onPickerBlur = () => {
     if (props.onBlur) {
       props.onBlur();
     }
@@ -89,8 +89,8 @@ const DateTimePickerStartEnd = (props) => {
   const timePlaceholder = "請選擇時間";
   return (
     <>
-      <Col span={8}>
-        <Form.Item label="開始時間" colon={false} required={true}>
+      <Col sm={24} lg={12} xl={8}>
+        <Form.Item label="開始時間" colon={false} required>
           <DatePicker
             disabled={props.disabled}
             showToday={false}
@@ -103,14 +103,13 @@ const DateTimePickerStartEnd = (props) => {
             onChange={(date, dateStr) => {
               handleChange(dateStr, "startDate");
             }}
-            onBlur={(e) => {
-              onPickerBlur(e);
-            }}
+            onBlur={onPickerBlur}
             disabledDate={disabledDateForStart}
             defaultPickerValue={
               startDateDefault === null ? null : moment(startDateDefault)
             }
           />
+          &nbsp;&nbsp;
           <TimePicker
             disabled={props.disabled}
             placeholder={timePlaceholder}
@@ -122,9 +121,7 @@ const DateTimePickerStartEnd = (props) => {
             onChange={(time, timeStr) => {
               handleChange(timeStr, "startTime");
             }}
-            onBlur={(e) => {
-              onPickerBlur(e);
-            }}
+            onBlur={onPickerBlur}
           />
           <br />
           <label style={{ color: "red", fontSize: "0.5rem" }}>
@@ -132,8 +129,8 @@ const DateTimePickerStartEnd = (props) => {
           </label>
         </Form.Item>
       </Col>
-      <Col span={8}>
-        <Form.Item label="結束時間" colon={false} required={true}>
+      <Col sm={24} lg={12} xl={8}>
+        <Form.Item label="結束時間" colon={false} required>
           <DatePicker
             disabled={props.disabled}
             showToday={false}
@@ -144,14 +141,13 @@ const DateTimePickerStartEnd = (props) => {
             onChange={(date, dateStr) => {
               handleChange(dateStr, "endDate");
             }}
-            onBlur={(e) => {
-              onPickerBlur(e);
-            }}
+            onBlur={onPickerBlur}
             disabledDate={disabledDateForEnd}
             defaultPickerValue={
               endDateDefault === null ? null : moment(endDateDefault)
             }
           />
+          &nbsp;&nbsp;
           <TimePicker
             disabled={props.disabled}
             placeholder={timePlaceholder}
@@ -161,9 +157,7 @@ const DateTimePickerStartEnd = (props) => {
             onChange={(time, timeStr) => {
               handleChange(timeStr, "endTime");
             }}
-            onBlur={(e) => {
-              onPickerBlur(e);
-            }}
+            onBlur={onPickerBlur}
           />
           <br />
           <label style={{ color: "red", fontSize: "0.5rem" }}>

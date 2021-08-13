@@ -47,10 +47,11 @@ const ValidationFormInFormik = (props) => {
   } = useFormikContext();
   const [title, setTitle] = useState("新增資料");
   useEffect(() => {
+    handleReset();
     setFieldValue("isEditMode", false, false);
     switch (formMode) {
       case FORM_MODE.ADD:
-        handleReset();
+        //handleReset();
         setTitle("新增資料");
         break;
       case FORM_MODE.EDIT:
@@ -91,7 +92,10 @@ const ValidationFormInFormik = (props) => {
         setFieldValue("price", validationFormList[viewID].price);
         setFieldValue("description", validationFormList[viewID].description);
         setFieldValue("instruction", validationFormList[viewID].instruction);
-        setFieldValue("hasUpperLimit", validationFormList[viewID].hasUpperLimit);
+        setFieldValue(
+          "hasUpperLimit",
+          validationFormList[viewID].hasUpperLimit
+        );
         setFieldValue("upperLimit", validationFormList[viewID].upperLimit);
         setFieldValue("color", validationFormList[viewID].color);
         setFieldValue("startDate", validationFormList[viewID].startDate);
@@ -115,20 +119,15 @@ const ValidationFormInFormik = (props) => {
     handleReset,
   ]);
 
-  const layout = {
-    labelCol: { span: 4 },
-    wrapperCol: { span: 14 },
-  };
   return (
     <div>
       <Modal
         visible={formVisible}
-        width="80vw"
+        width="100%"
         onCancel={() => {
           setFormVisible(false);
         }}
         onOk={() => {
-
           if (formMode === FORM_MODE.VIEW) {
             setFormVisible(false);
             return;
@@ -175,217 +174,212 @@ const ValidationFormInFormik = (props) => {
         }}
       >
         <Title>{title}</Title>
-        <Form {...layout}>
-          <Row justify="space-around" style={{ width: "80vw" }}>
-            <Col span={6}>
-              <Form.Item label="編號" required={true} colon={false}>
-                <div style={{ display: "inline-block" }}>
-                  {(formMode === FORM_MODE.ADD) ?
-                    <Input
-                      disabled={values.isEditMode}
-                      readOnly={formMode === FORM_MODE.VIEW}
-                      style={{ width: "12rem", display: "block" }}
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.serialNumber}
-                      name="serialNumber"
-                      placeholder="請輸入"
-                      suffix={`${values.serialNumber.length}/10`}
-                    /> : <label>{values.serialNumber}</label>
-                  }
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.serialNumber ? errors.serialNumber : null}
-                  </label>
-                </div>
+        <Form layout={"vertical"}>
+          <Row gutter={[16, 16]}>
+            <Col sm={24} md={12} xl={6}>
+              <Form.Item label="編號" required colon={false}>
+                {formMode === FORM_MODE.ADD ? (
+                  <Input
+                    disabled={values.isEditMode}
+                    readOnly={formMode === FORM_MODE.VIEW}
+                    type="text"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.serialNumber}
+                    name="serialNumber"
+                    placeholder="請輸入"
+                    suffix={`${values.serialNumber.length}/10`}
+                  />
+                ) : (
+                  <label>{values.serialNumber}</label>
+                )}
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {touched.serialNumber ? errors.serialNumber : null}
+                </label>
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col sm={24} md={12} xl={6}>
               <Form.Item label="組織名稱" colon={false}>
-                <div style={{ display: "inline-block" }}>
-                  <Input
-                    readOnly={formMode === FORM_MODE.VIEW}
-                    style={{ width: "15rem", display: "block" }}
-                    type="text"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.organizationName}
-                    name="organizationName"
-                    placeholder="請輸入"
-                    suffix={`${values.organizationName.length}/15`}
-                  />
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.organizationName ? errors.organizationName : null}
-                  </label>
-                </div>
+                <Input
+                  readOnly={formMode === FORM_MODE.VIEW}
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.organizationName}
+                  name="organizationName"
+                  placeholder="請輸入"
+                  suffix={`${values.organizationName.length}/15`}
+                />
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {touched.organizationName ? errors.organizationName : null}
+                </label>
               </Form.Item>
             </Col>
-            <Col span={6}>
+            <Col sm={24} md={12} xl={6}>
               <Form.Item label="重量" colon={false}>
-                <div style={{ display: "inline-block" }}>
-                  <Input
-                    readOnly={formMode === FORM_MODE.VIEW}
-                    style={{ width: "10rem", display: "block" }}
-                    type="text"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.weight}
-                    name="weight"
-                    placeholder="0"
-                    suffix="kg"
-                  />
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.weight ? errors.weight : null}
-                  </label>
-                </div>
+                <Input
+                  readOnly={formMode === FORM_MODE.VIEW}
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.weight}
+                  name="weight"
+                  placeholder="0"
+                  suffix="kg"
+                />
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {touched.weight ? errors.weight : null}
+                </label>
               </Form.Item>
             </Col>
-            <Col span={6}>
-              <Form.Item label="價格" colon={false} required={true}>
-                <div style={{ display: "inline-block" }}>
-                  <InputNumber
-                    readOnly={formMode === FORM_MODE.VIEW}
-                    style={{ width: "10rem", display: "block" }}
-                    min={0}
-                    max={1000}
-                    precision={0}
-                    onChange={(value) => {
-                      setFieldValue("price", value, false);
-                    }}
-                    onBlur={handleBlur}
-                    value={values.price}
-                    name="price"
-                  />
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.price ? errors.price : null}
-                  </label>
-                </div>
+            <Col sm={24} md={12} xl={6}>
+              <Form.Item label="價格" colon={false} required>
+                <InputNumber
+                  style={{ width: "100%" }}
+                  readOnly={formMode === FORM_MODE.VIEW}
+                  min={0}
+                  max={1000}
+                  precision={0}
+                  onChange={(value) => {
+                    setFieldValue("price", value, false);
+                  }}
+                  onBlur={handleBlur}
+                  value={values.price}
+                  name="price"
+                />
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {touched.price ? errors.price : null}
+                </label>
               </Form.Item>
             </Col>
           </Row>
-          <Row justify="space-around" style={{ width: "100vw" }}>
-            <Col span={8}>
-              <Form.Item required={true} label="描述" colon={false}>
-                <div style={{ display: "inline-block" }}>
-                  <Input.TextArea
-                    readOnly={formMode === FORM_MODE.VIEW}
-                    style={{ width: "60vw", height: "30vh" }}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.description}
-                    name="description"
-                  />
-                  <br />
-                  <label style={{ width: "2rem" }}>{`${getDescriptionLength(
-                    values.description
-                  )}/3000`}</label>
-                  &nbsp;&nbsp;&nbsp;
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.description ? errors.description : null}
-                  </label>
-                </div>
+          <Row gutter={[16, 16]}>
+            <Col span={24}>
+              <Form.Item label="描述" colon={false}>
+                <Input.TextArea
+                  readOnly={formMode === FORM_MODE.VIEW}
+                  style={{ width: "100%", height: "30vh" }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.description}
+                  name="description"
+                />
+                <br />
+                <label style={{ width: "2rem" }}>{`${getDescriptionLength(
+                  values.description
+                )}/3000`}</label>
+                &nbsp;&nbsp;&nbsp;
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {touched.description ? errors.description : null}
+                </label>
               </Form.Item>
             </Col>
           </Row>
-          <Row justify="space-around" style={{ width: "100vw" }}>
-            <Col span={7}>
+          <Row gutter={[16, 16]}>
+            <Col sm={24} lg={12} xl={8}>
               <Form.Item label="使用方式" colon={false}>
-                <div style={{ display: "inline-block" }}>
-                  <Input
-                    readOnly={formMode === FORM_MODE.VIEW}
-                    style={{ width: "15rem", display: "block" }}
-                    type="text"
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    value={values.instruction}
-                    name="instruction"
-                    placeholder="請輸入"
-                    suffix={`${values.instruction.length}/15`}
-                  />
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.instruction ? errors.instruction : null}
-                  </label>
-                </div>
+                <Input
+                  readOnly={formMode === FORM_MODE.VIEW}
+                  type="text"
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.instruction}
+                  name="instruction"
+                  placeholder="請輸入"
+                  suffix={`${values.instruction.length}/15`}
+                />
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {touched.instruction ? errors.instruction : null}
+                </label>
               </Form.Item>
             </Col>
-            <Col span={7}>
+            <Col sm={24} lg={12} xl={8}>
               <Form.Item
                 label="上限"
                 colon={false}
                 required={values.hasUpperLimit}
               >
-                <div style={{ display: "inline-block" }}>
-                  {formMode !== FORM_MODE.VIEW ? <>
-                    <Switch
-                      style={{ display: "inline" }}
-                      onChange={(value) => {
-                        setFieldValue("hasUpperLimit", value, false);
-                        if (!value) {
-                          setFieldValue("upperLimit", "", false);
-                        }
-                      }}
-                      onBlur={handleBlur}
-                      checked={values.hasUpperLimit}
-                      value={values.hasUpperLimit}
-                    />
-                    &nbsp;&nbsp;&nbsp;
-                    <Input
-                      style={{ width: "12rem" }}
-                      type="text"
-                      disabled={!values.hasUpperLimit}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.upperLimit}
-                      name="upperLimit"
-                      placeholder={values.hasUpperLimit ? "請輸入" : ""}
-                      suffix={`${values.upperLimit.length}/10`}
-                    />
-                  </> : <label>{values.upperLimit ? values.upperLimit : '-'}</label>}
+                {formMode !== FORM_MODE.VIEW ? (
+                  <>
+                    <Col span={4}>
+                      <Switch
+                        onChange={(value) => {
+                          setFieldValue("hasUpperLimit", value, false);
+                          if (!value) {
+                            setFieldValue("upperLimit", "", false);
+                          }
+                        }}
+                        onBlur={handleBlur}
+                        checked={values.hasUpperLimit}
+                        value={values.hasUpperLimit}
+                      />
+                      &nbsp;&nbsp;&nbsp;
+                    </Col>
+                    <Col span={20}>
+                      <Input
+                        type="text"
+                        disabled={!values.hasUpperLimit}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.upperLimit}
+                        name="upperLimit"
+                        placeholder={values.hasUpperLimit ? "請輸入" : ""}
+                        suffix={`${values.upperLimit.length}/10`}
+                      />
+                    </Col>
+                  </>
+                ) : (
+                  <label>{values.upperLimit ? values.upperLimit : "-"}</label>
+                )}
 
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {values.hasUpperLimit
-                      ? touched.upperLimit
-                        ? errors.upperLimit
-                        : null
-                      : null}
-                  </label>
-                </div>
+                <label style={{ color: "red", fontSize: "0.5rem" }}>
+                  {values.hasUpperLimit
+                    ? touched.upperLimit
+                      ? errors.upperLimit
+                      : null
+                    : null}
+                </label>
               </Form.Item>
             </Col>
-            <Col span={8}>
-              <Form.Item label="顏色" colon={false} required={true}>
-                {formMode !== FORM_MODE.VIEW ? <div style={{ display: "inline-block" }}>
-                  <Select
-                    style={{ width: "8rem" }}
-                    mode="multiple"
-                    placeholder="請選擇"
-                    value={values.color}
-                    name="color"
-                    onChange={(value) => {
-                      value.sort();
-                      setFieldValue("color", value, true);
-                    }}
-                    /*好像有問題 回傳的值與onChange相同*/
-                    onBlur={() => {
-                      setFieldTouched("color", true);
-                    }}
-                  >
-                    {FORM_COLOR_OPTION.map((val, index) => {
-                      return (
-                        <Select.Option value={index} key={index}>
-                          {val}
-                        </Select.Option>
-                      );
-                    })}
-                  </Select>
-                  <label style={{ color: "red", fontSize: "0.5rem" }}>
-                    {touched.color ? errors.color : null}
+            <Col sm={24} lg={12} xl={8}>
+              <Form.Item label="顏色" colon={false} required>
+                {formMode !== FORM_MODE.VIEW ? (
+                  <>
+                    <Select
+                      mode="multiple"
+                      placeholder="請選擇"
+                      value={values.color}
+                      name="color"
+                      onChange={(value) => {
+                        value.sort();
+                        setFieldValue("color", value, true);
+                      }}
+                      /*好像有問題 回傳的值與onChange相同*/
+                      onBlur={() => {
+                        setFieldTouched("color", true);
+                      }}
+                    >
+                      {FORM_COLOR_OPTION.map((val, index) => {
+                        return (
+                          <Select.Option value={index} key={index}>
+                            {val}
+                          </Select.Option>
+                        );
+                      })}
+                    </Select>
+                    <label style={{ color: "red", fontSize: "0.5rem" }}>
+                      {touched.color ? errors.color : null}
+                    </label>
+                  </>
+                ) : (
+                  <label>
+                    {values.color.map((val) => `${FORM_COLOR_OPTION[val]} `)}
                   </label>
-                </div> : <label>{values.color.map((val) => `${FORM_COLOR_OPTION[val]} `)}</label>}
+                )}
               </Form.Item>
             </Col>
           </Row>
-          <Row justify="space-around" style={{ width: "100vw" }}>
+          <Row gutter={[16, 16]}>
             <DateTimePickerStartEnd
               disabled={formMode === FORM_MODE.VIEW}
               startDate={values.startDate}
@@ -402,21 +396,25 @@ const ValidationFormInFormik = (props) => {
               }}
             />
 
-            <Col span={8}>
-              <Form.Item label="性別" colon={false} required={true}>
-                {formMode !== FORM_MODE.VIEW ? <Radio.Group
-                  onChange={handleChange}
-                  value={values.gender}
-                  name="gender"
-                >
-                  {GENDER_OPTION.map((val, id) => {
-                    return (
-                      <Radio value={id} key={id}>
-                        {val}
-                      </Radio>
-                    );
-                  })}
-                </Radio.Group> : <label>{GENDER_OPTION[values.gender]}</label>}
+            <Col sm={24} lg={12} xl={8}>
+              <Form.Item label="性別" colon={false} required>
+                {formMode !== FORM_MODE.VIEW ? (
+                  <Radio.Group
+                    onChange={handleChange}
+                    value={values.gender}
+                    name="gender"
+                  >
+                    {GENDER_OPTION.map((val, id) => {
+                      return (
+                        <Radio value={id} key={id}>
+                          {val}
+                        </Radio>
+                      );
+                    })}
+                  </Radio.Group>
+                ) : (
+                  <label>{GENDER_OPTION[values.gender]}</label>
+                )}
               </Form.Item>
             </Col>
           </Row>
