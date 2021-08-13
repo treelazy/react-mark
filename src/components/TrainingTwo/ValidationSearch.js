@@ -33,7 +33,13 @@ const ValidationSearch = () => {
                     <Col sm={24} md={6} xl={6}>
                     </Col>
                     <Col sm={24} md={6} xl={6}>
-                      <Form.Item label="編號" colon={false}>
+                      <Form.Item label="編號" colon={false}
+                        validateStatus={
+                          props.touched.serialNumber && props.errors.serialNumber
+                            ? "error"
+                            : "success"
+                        }
+                        help={props.touched.serialNumber ? props.errors.serialNumber : ""}>
                         <Input
                           type="text"
                           onChange={props.handleChange}
@@ -43,12 +49,6 @@ const ValidationSearch = () => {
                           placeholder="請輸入"
                           suffix={`${props.values.serialNumber.length}/10`}
                         />
-                        <br />
-                        <label style={{ color: "red", fontSize: "0.5rem" }}>
-                          {props.touched.serialNumber
-                            ? props.errors.serialNumber
-                            : null}
-                        </label>
                       </Form.Item>
                     </Col>
                     <Col sm={24} md={6} xl={6}>

@@ -90,7 +90,13 @@ const DateTimePickerStartEnd = (props) => {
   return (
     <>
       <Col sm={24} lg={12} xl={8}>
-        <Form.Item label="開始時間" colon={false} required>
+        <Form.Item label="開始時間" colon={false} required
+          validateStatus={
+            props.errorMessage
+              ? "error"
+              : "success"
+          }
+          help={props.errorMessage ? props.errorMessage.split(",")[0] : ""}>
           <DatePicker
             disabled={props.disabled}
             showToday={false}
@@ -123,14 +129,16 @@ const DateTimePickerStartEnd = (props) => {
             }}
             onBlur={onPickerBlur}
           />
-          <br />
-          <label style={{ color: "red", fontSize: "0.5rem" }}>
-            {props.errorMessage ? props.errorMessage.split(",")[0] : null}
-          </label>
         </Form.Item>
       </Col>
       <Col sm={24} lg={12} xl={8}>
-        <Form.Item label="結束時間" colon={false} required>
+        <Form.Item label="結束時間" colon={false} required
+          validateStatus={
+            props.errorMessage
+              ? "error"
+              : "success"
+          }
+          help={props.errorMessage ? props.errorMessage.split(",")[1] : ""}>
           <DatePicker
             disabled={props.disabled}
             showToday={false}
@@ -159,10 +167,6 @@ const DateTimePickerStartEnd = (props) => {
             }}
             onBlur={onPickerBlur}
           />
-          <br />
-          <label style={{ color: "red", fontSize: "0.5rem" }}>
-            {props.errorMessage ? props.errorMessage.split(",")[1] : null}
-          </label>
         </Form.Item>
       </Col>
     </>

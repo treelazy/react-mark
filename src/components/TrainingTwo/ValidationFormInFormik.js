@@ -177,7 +177,17 @@ const ValidationFormInFormik = (props) => {
         <Form layout={"vertical"}>
           <Row gutter={[16, 16]}>
             <Col sm={24} md={12} xl={6}>
-              <Form.Item label="編號" required colon={false}>
+              <Form.Item
+                label="編號"
+                required
+                colon={false}
+                validateStatus={
+                  touched.serialNumber && errors.serialNumber
+                    ? "error"
+                    : "success"
+                }
+                help={touched.serialNumber ? errors.serialNumber : ""}
+              >
                 {formMode === FORM_MODE.ADD ? (
                   <Input
                     disabled={values.isEditMode}
@@ -193,13 +203,19 @@ const ValidationFormInFormik = (props) => {
                 ) : (
                   <label>{values.serialNumber}</label>
                 )}
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {touched.serialNumber ? errors.serialNumber : null}
-                </label>
               </Form.Item>
             </Col>
             <Col sm={24} md={12} xl={6}>
-              <Form.Item label="組織名稱" colon={false}>
+              <Form.Item
+                label="組織名稱"
+                colon={false}
+                validateStatus={
+                  touched.organizationName && errors.organizationName
+                    ? "error"
+                    : "success"
+                }
+                help={touched.organizationName ? errors.organizationName : ""}
+              >
                 <Input
                   readOnly={formMode === FORM_MODE.VIEW}
                   type="text"
@@ -210,13 +226,17 @@ const ValidationFormInFormik = (props) => {
                   placeholder="請輸入"
                   suffix={`${values.organizationName.length}/15`}
                 />
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {touched.organizationName ? errors.organizationName : null}
-                </label>
               </Form.Item>
             </Col>
             <Col sm={24} md={12} xl={6}>
-              <Form.Item label="重量" colon={false}>
+              <Form.Item
+                label="重量"
+                colon={false}
+                validateStatus={
+                  touched.weight && errors.weight ? "error" : "success"
+                }
+                help={touched.weight ? errors.weight : ""}
+              >
                 <Input
                   readOnly={formMode === FORM_MODE.VIEW}
                   type="text"
@@ -227,13 +247,18 @@ const ValidationFormInFormik = (props) => {
                   placeholder="0"
                   suffix="kg"
                 />
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {touched.weight ? errors.weight : null}
-                </label>
               </Form.Item>
             </Col>
             <Col sm={24} md={12} xl={6}>
-              <Form.Item label="價格" colon={false} required>
+              <Form.Item
+                label="價格"
+                colon={false}
+                required
+                validateStatus={
+                  touched.price && errors.price ? "error" : "success"
+                }
+                help={touched.price ? errors.price : ""}
+              >
                 <InputNumber
                   style={{ width: "100%" }}
                   readOnly={formMode === FORM_MODE.VIEW}
@@ -247,15 +272,21 @@ const ValidationFormInFormik = (props) => {
                   value={values.price}
                   name="price"
                 />
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {touched.price ? errors.price : null}
-                </label>
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={[16, 16]}>
             <Col span={24}>
-              <Form.Item label="描述" colon={false}>
+              <Form.Item
+                label="描述"
+                colon={false}
+                validateStatus={
+                  touched.description && errors.description
+                    ? "error"
+                    : "success"
+                }
+                help={touched.description ? errors.description : ""}
+              >
                 <Input.TextArea
                   readOnly={formMode === FORM_MODE.VIEW}
                   style={{ width: "100%", height: "30vh" }}
@@ -268,16 +299,21 @@ const ValidationFormInFormik = (props) => {
                 <label style={{ width: "2rem" }}>{`${getDescriptionLength(
                   values.description
                 )}/3000`}</label>
-                &nbsp;&nbsp;&nbsp;
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {touched.description ? errors.description : null}
-                </label>
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={[16, 16]}>
             <Col sm={24} lg={12} xl={8}>
-              <Form.Item label="使用方式" colon={false}>
+              <Form.Item
+                label="使用方式"
+                colon={false}
+                validateStatus={
+                  touched.instruction && errors.instruction
+                    ? "error"
+                    : "success"
+                }
+                help={touched.instruction ? errors.instruction : ""}
+              >
                 <Input
                   readOnly={formMode === FORM_MODE.VIEW}
                   type="text"
@@ -288,9 +324,6 @@ const ValidationFormInFormik = (props) => {
                   placeholder="請輸入"
                   suffix={`${values.instruction.length}/15`}
                 />
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {touched.instruction ? errors.instruction : null}
-                </label>
               </Form.Item>
             </Col>
             <Col sm={24} lg={12} xl={8}>
@@ -298,6 +331,18 @@ const ValidationFormInFormik = (props) => {
                 label="上限"
                 colon={false}
                 required={values.hasUpperLimit}
+                validateStatus={
+                  values.hasUpperLimit &&
+                  touched.upperLimit &&
+                  errors.upperLimit
+                    ? "error"
+                    : "success"
+                }
+                help={
+                  touched.upperLimit && values.hasUpperLimit
+                    ? errors.upperLimit
+                    : ""
+                }
               >
                 {formMode !== FORM_MODE.VIEW ? (
                   <>
@@ -331,18 +376,18 @@ const ValidationFormInFormik = (props) => {
                 ) : (
                   <label>{values.upperLimit ? values.upperLimit : "-"}</label>
                 )}
-
-                <label style={{ color: "red", fontSize: "0.5rem" }}>
-                  {values.hasUpperLimit
-                    ? touched.upperLimit
-                      ? errors.upperLimit
-                      : null
-                    : null}
-                </label>
               </Form.Item>
             </Col>
             <Col sm={24} lg={12} xl={8}>
-              <Form.Item label="顏色" colon={false} required>
+              <Form.Item
+                label="顏色"
+                colon={false}
+                required
+                validateStatus={
+                  touched.color && errors.color ? "error" : "success"
+                }
+                help={touched.color ? errors.color : ""}
+              >
                 {formMode !== FORM_MODE.VIEW ? (
                   <>
                     <Select
@@ -367,9 +412,6 @@ const ValidationFormInFormik = (props) => {
                         );
                       })}
                     </Select>
-                    <label style={{ color: "red", fontSize: "0.5rem" }}>
-                      {touched.color ? errors.color : null}
-                    </label>
                   </>
                 ) : (
                   <label>
