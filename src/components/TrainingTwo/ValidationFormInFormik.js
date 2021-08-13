@@ -119,6 +119,10 @@ const ValidationFormInFormik = (props) => {
     handleReset,
   ]);
 
+  const layout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+  };
   return (
     <div>
       <Modal
@@ -174,8 +178,8 @@ const ValidationFormInFormik = (props) => {
         }}
       >
         <Title>{title}</Title>
-        <Form layout={"vertical"}>
-          <Row gutter={[16, 16]}>
+        <Form {...layout}>
+          <Row gutter={[16, 16]} type="flex">
             <Col sm={24} md={12} xl={6}>
               <Form.Item
                 label="編號"
@@ -276,8 +280,11 @@ const ValidationFormInFormik = (props) => {
             </Col>
           </Row>
           <Row gutter={[16, 16]}>
+            <Col span={0} />
             <Col span={24}>
               <Form.Item
+                labelCol={24}
+                wrapperCol={24}
                 label="描述"
                 colon={false}
                 validateStatus={
@@ -460,24 +467,20 @@ const ValidationFormInFormik = (props) => {
               </Form.Item>
             </Col>
           </Row>
-          <div
-            style={{
-              margin: "0px auto",
-              width: "15rem",
-              display: "flex",
-              justifyContent: "space-around",
-            }}
-          >
-            {formMode === FORM_MODE.ADD ? (
-              <Button
-                onClick={() => {
-                  handleReset();
-                }}
-              >
-                Reset Form
-              </Button>
-            ) : null}
-          </div>
+
+          {formMode === FORM_MODE.ADD ? (
+            <Row>
+              <Col span={24} style={{ textAlign: "center" }}>
+                <Button
+                  onClick={() => {
+                    handleReset();
+                  }}
+                >
+                  Reset Form
+                </Button>
+              </Col>
+            </Row>
+          ) : null}
         </Form>
       </Modal>
     </div>

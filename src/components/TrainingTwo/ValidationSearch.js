@@ -74,6 +74,18 @@ const ValidationSearch = () => {
                   <br />
                   <Row type="flex" justify="center">
                     <Col sm={4} md={3} xl={2}>
+
+                    </Col>
+                    <Col sm={4} md={3} xl={2}>
+
+                    </Col>
+                    <Col sm={4} md={3} xl={2}>
+
+                    </Col>
+                  </Row>
+
+                  <Row>
+                    <Col span={24} style={{ textAlign: 'center' }}>
                       <Button
                         onClick={() => {
                           updateSearchResultByCondition(props.values);
@@ -81,18 +93,15 @@ const ValidationSearch = () => {
                       >
                         Search
                       </Button>
-                    </Col>
-                    <Col sm={4} md={3} xl={2}>
-                      <Button
+                      <Button style={{ marginLeft: 8 }}
                         onClick={() => {
                           setSearchResultList(null);
                         }}
                       >
                         Reset
                       </Button>
-                    </Col>
-                    <Col sm={4} md={3} xl={2}>
-                      <Button
+
+                      <Button style={{ marginLeft: 8 }}
                         onClick={() => {
                           showForm(FORM_MODE.ADD);
                         }}
@@ -101,6 +110,7 @@ const ValidationSearch = () => {
                       </Button>
                     </Col>
                   </Row>
+
                 </Form>
               </div>
             );

@@ -51,6 +51,7 @@ const ValidationTable = () => {
       dataSourceItem.action = (
         <div>
           <Button
+            style={{ marginLeft: 8, marginBottom: 8 }}
             id={item.serialNumber}
             htmlType="button"
             onClick={() => {
@@ -59,8 +60,9 @@ const ValidationTable = () => {
           >
             Edit
           </Button>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
           <Button
+            style={{ marginLeft: 8, marginBottom: 8 }}
             id={item.serialNumber}
             htmlType="button"
             onClick={() => {
@@ -70,8 +72,9 @@ const ValidationTable = () => {
           >
             View
           </Button>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
           <Button
+            style={{ marginLeft: 8, marginBottom: 8 }}
             id={item.serialNumber}
             type="danger"
             htmlType="button"
