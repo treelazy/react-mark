@@ -1,6 +1,8 @@
 import { Button, Table, message, Typography } from "antd";
 import React, { useContext, useState, useEffect } from "react";
-import { FORM_COLOR_OPTION, FORM_MODE, GENDER_OPTION, VALIDATION_TABLE_COLUMNS } from "./Constant";
+import { useHistory, useRouteMatch, withRouter } from "react-router-dom";
+import moment from "moment";
+import { FORM_COLOR_OPTION, FORM_MODE, GENDER_OPTION } from "./Constant";
 import { MyContext } from "./TrainingTwo";
 const { Title } = Typography;
 const ValidationTable = () => {
@@ -13,6 +15,9 @@ const ValidationTable = () => {
   } = useContext(MyContext);
   const [tableDataSource, setTableDataSource] = useState([]);
   const [title, setTitle] = useState("全部資料");
+  const history = useHistory();
+  const match = useRouteMatch("/:columnKey/:order");
+
   useEffect(() => {
     let dataSource = [];
     let targetList = null;
@@ -39,12 +44,17 @@ const ValidationTable = () => {
         : "-";
       dataSourceItem.weight = item.weight ? item.weight : "-";
       dataSourceItem.price = item.price;
-      dataSourceItem.description = item.description ? (item.description.length > 3 ? `${item.description.substring(0, 3)}...` : item.description) : "-";
-      dataSourceItem.instruction = item.instruction ? item.instruction : "-";
-      dataSourceItem.upperLimit = item.hasUpperLimit
-        ? item.upperLimit
+      dataSourceItem.description = item.description
+        ? item.description.length > 3
+          ? `${item.description.substring(0, 3)}...`
+          : item.description
         : "-";
-      dataSourceItem.color = item.color.length > 0 ? item.color.map((val) => `${FORM_COLOR_OPTION[val]} `) : "-";
+      dataSourceItem.instruction = item.instruction ? item.instruction : "-";
+      dataSourceItem.upperLimit = item.hasUpperLimit ? item.upperLimit : "-";
+      dataSourceItem.color =
+        item.color.length > 0
+          ? item.color.map((val) => `${FORM_COLOR_OPTION[val]} `)
+          : "-";
       dataSourceItem.startDateTime = `${item.startEndDateTime[0]} ${item.startEndDateTime[1]}`;
       dataSourceItem.endDateTime = `${item.startEndDateTime[2]} ${item.startEndDateTime[3]}`;
       dataSourceItem.gender = GENDER_OPTION[item.gender];
@@ -67,7 +77,7 @@ const ValidationTable = () => {
             htmlType="button"
             onClick={() => {
               //onViewBtnClick(item.serialNumber);
-              showForm(FORM_MODE.VIEW, item.serialNumber)
+              showForm(FORM_MODE.VIEW, item.serialNumber);
             }}
           >
             View
@@ -115,10 +125,101 @@ const ValidationTable = () => {
     defaultPageSize: 20,
   };
 
+  const onTableChange = (pagination, filters, sorter, extra) => {
+    if (sorter.order) {
+      history.push(`/${sorter.field}/${sorter.order}`);
+    } else {
+      history.push("/");
+    }
+  };
+
+  const matchParams = match ? match.params : null;
+  let tableSortedInfo = matchParams;
+  tableSortedInfo = tableSortedInfo || {};
+
+  const VALIDATION_TABLE_COLUMNS = [
+    {
+      title: "編號",
+      dataIndex: "serialNumber",
+      key: "serialNumber",
+      sorter: (a, b) => parseInt(a.serialNumber) - parseInt(b.serialNumber),
+      sortDirections: ["ascend", "descend"],
+      sortOrder:
+        tableSortedInfo.columnKey === "serialNumber" && tableSortedInfo.order,
+    },
+    {
+      title: "組織名稱",
+      dataIndex: "organizationName",
+      key: "organizationName",
+    },
+    {
+      title: "重量",
+      dataIndex: "weight",
+      key: "weight",
+    },
+    {
+      title: "價錢",
+      dataIndex: "price",
+      key: "price",
+      sorter: (a, b) => a.price - b.price,
+      sortDirections: ["ascend", "descend"],
+      sortOrder: tableSortedInfo.columnKey === "price" && tableSortedInfo.order,
+    },
+    {
+      title: "描述",
+      dataIndex: "description",
+      key: "description",
+    },
+    {
+      title: "使用方式",
+      dataIndex: "instruction",
+      key: "instruction",
+    },
+    {
+      title: "上限",
+      dataIndex: "upperLimit",
+      key: "upperLimit",
+    },
+    {
+      title: "顏色",
+      dataIndex: "color",
+      key: "color",
+    },
+    {
+      title: "開始時間",
+      dataIndex: "startDateTime",
+      key: "startDateTime",
+      sorter: (a, b) => moment(a.startDateTime) - moment(b.startDateTime),
+      sortDirections: ["ascend", "descend"],
+      sortOrder:
+        tableSortedInfo.columnKey === "startDateTime" && tableSortedInfo.order,
+    },
+    {
+      title: "結束時間",
+      dataIndex: "endDateTime",
+      key: "endDateTime",
+      sorter: (a, b) => moment(a.endDateTime) - moment(b.endDateTime),
+      sortDirections: ["ascend", "descend"],
+      sortOrder:
+        tableSortedInfo.columnKey === "endDateTime" && tableSortedInfo.order,
+    },
+    {
+      title: "性別",
+      dataIndex: "gender",
+      key: "gender",
+    },
+    {
+      title: "動作",
+      dataIndex: "action",
+      key: "action",
+    },
+  ];
+
   return (
     <div>
       <Title>{title}</Title>
       <Table
+        onChange={onTableChange}
         pagination={pagination}
         dataSource={tableDataSource}
         columns={VALIDATION_TABLE_COLUMNS}
@@ -127,4 +228,4 @@ const ValidationTable = () => {
   );
 };
 
-export default ValidationTable;
+export default withRouter(ValidationTable);

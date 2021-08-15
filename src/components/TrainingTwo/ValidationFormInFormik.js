@@ -51,7 +51,6 @@ const ValidationFormInFormik = (props) => {
     setFieldValue("isEditMode", false, false);
     switch (formMode) {
       case FORM_MODE.ADD:
-        //handleReset();
         setTitle("新增資料");
         break;
       case FORM_MODE.EDIT:
@@ -120,8 +119,8 @@ const ValidationFormInFormik = (props) => {
   ]);
 
   const layout = {
-    labelCol: { span: 6 },
-    wrapperCol: { span: 18 },
+    labelCol: { sm: { span: 24 }, md: { span: 6 } },
+    wrapperCol: { sm: { span: 24 }, md: { span: 18 } },
   };
   return (
     <div>
@@ -179,8 +178,8 @@ const ValidationFormInFormik = (props) => {
       >
         <Title>{title}</Title>
         <Form {...layout}>
-          <Row gutter={[16, 16]} type="flex">
-            <Col sm={24} md={12} xl={6}>
+          <Row gutter={[16, 16]}>
+            <Col sm={{ span: 24 }} md={{ span: 12 }} xl={{ span: 6 }}>
               <Form.Item
                 label="編號"
                 required
@@ -209,7 +208,7 @@ const ValidationFormInFormik = (props) => {
                 )}
               </Form.Item>
             </Col>
-            <Col sm={24} md={12} xl={6}>
+            <Col sm={{ span: 24 }} md={{ span: 12 }} xl={{ span: 6 }}>
               <Form.Item
                 label="組織名稱"
                 colon={false}
@@ -232,7 +231,7 @@ const ValidationFormInFormik = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col sm={24} md={12} xl={6}>
+            <Col sm={{ span: 24 }} md={{ span: 12 }} xl={{ span: 6 }}>
               <Form.Item
                 label="重量"
                 colon={false}
@@ -253,7 +252,7 @@ const ValidationFormInFormik = (props) => {
                 />
               </Form.Item>
             </Col>
-            <Col sm={24} md={12} xl={6}>
+            <Col sm={{ span: 24 }} md={{ span: 12 }} xl={{ span: 6 }}>
               <Form.Item
                 label="價格"
                 colon={false}
@@ -283,8 +282,8 @@ const ValidationFormInFormik = (props) => {
             <Col span={0} />
             <Col span={24}>
               <Form.Item
-                labelCol={24}
-                wrapperCol={24}
+                labelCol={{ span: 24 }}
+                wrapperCol={{ span: 24 }}
                 label="描述"
                 colon={false}
                 validateStatus={
