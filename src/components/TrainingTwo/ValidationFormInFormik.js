@@ -176,7 +176,7 @@ const ValidationFormInFormik = (props) => {
           }
         }}
       >
-        <Title>{title}</Title>
+        <Title style={{ textAlign: "center" }}>{title}</Title>
         <Form {...layout}>
           <Row gutter={[16, 16]}>
             <Col sm={{ span: 24 }} md={{ span: 12 }} xl={{ span: 6 }}>

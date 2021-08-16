@@ -17,6 +17,11 @@ const ValidationSearch = () => {
     return value;
   };
 
+  const layout = {
+    labelCol: { sm: { span: 24 }, md: { span: 6 } },
+    wrapperCol: { sm: { span: 24 }, md: { span: 18 } },
+  };
+
   return (
     <div /*style={{ height: "20rem" }}*/>
       <div>
@@ -28,18 +33,25 @@ const ValidationSearch = () => {
           {(props) => {
             return (
               <div>
-                <Form layout={"vertical"}>
+                <Form {...layout}>
                   <Row gutter={[16, 16]} type="flex" justify="center">
-                    <Col sm={24} md={6} xl={6}>
-                    </Col>
-                    <Col sm={24} md={6} xl={6}>
-                      <Form.Item label="編號" colon={false}
+                    <Col sm={24} md={2} xl={6}></Col>
+                    <Col sm={24} md={10} xl={6}>
+                      <Form.Item
+                        label="編號"
+                        colon={false}
                         validateStatus={
-                          props.touched.serialNumber && props.errors.serialNumber
+                          props.touched.serialNumber &&
+                          props.errors.serialNumber
                             ? "error"
                             : "success"
                         }
-                        help={props.touched.serialNumber ? props.errors.serialNumber : ""}>
+                        help={
+                          props.touched.serialNumber
+                            ? props.errors.serialNumber
+                            : ""
+                        }
+                      >
                         <Input
                           type="text"
                           onChange={props.handleChange}
@@ -51,7 +63,7 @@ const ValidationSearch = () => {
                         />
                       </Form.Item>
                     </Col>
-                    <Col sm={24} md={6} xl={6}>
+                    <Col sm={24} md={10} xl={6}>
                       <Form.Item label="性別" colon={false}>
                         <Radio.Group
                           onChange={props.handleChange}
@@ -68,24 +80,16 @@ const ValidationSearch = () => {
                         </Radio.Group>
                       </Form.Item>
                     </Col>
-                    <Col sm={24} md={6} xl={6}>
-                    </Col>
+                    <Col sm={24} md={2} xl={6}></Col>
                   </Row>
                   <br />
                   <Row type="flex" justify="center">
-                    <Col sm={4} md={3} xl={2}>
-
-                    </Col>
-                    <Col sm={4} md={3} xl={2}>
-
-                    </Col>
-                    <Col sm={4} md={3} xl={2}>
-
-                    </Col>
+                    <Col sm={4} md={3} xl={2}></Col>
+                    <Col sm={4} md={3} xl={2}></Col>
+                    <Col sm={4} md={3} xl={2}></Col>
                   </Row>
-
                   <Row>
-                    <Col span={24} style={{ textAlign: 'center' }}>
+                    <Col span={24} style={{ textAlign: "center" }}>
                       <Button
                         onClick={() => {
                           updateSearchResultByCondition(props.values);
@@ -93,7 +97,8 @@ const ValidationSearch = () => {
                       >
                         Search
                       </Button>
-                      <Button style={{ marginLeft: 8 }}
+                      <Button
+                        style={{ marginLeft: 8 }}
                         onClick={() => {
                           setSearchResultList(null);
                         }}
@@ -101,7 +106,8 @@ const ValidationSearch = () => {
                         Reset
                       </Button>
 
-                      <Button style={{ marginLeft: 8 }}
+                      <Button
+                        style={{ marginLeft: 8 }}
                         onClick={() => {
                           showForm(FORM_MODE.ADD);
                         }}
@@ -110,7 +116,6 @@ const ValidationSearch = () => {
                       </Button>
                     </Col>
                   </Row>
-
                 </Form>
               </div>
             );

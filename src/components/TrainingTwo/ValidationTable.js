@@ -217,7 +217,7 @@ const ValidationTable = () => {
 
   return (
     <div>
-      <Title>{title}</Title>
+      <Title style={{ textAlign: "center" }}>{title}</Title>
       <Table
         onChange={onTableChange}
         pagination={pagination}
