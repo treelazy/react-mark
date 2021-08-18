@@ -23,7 +23,7 @@ const ValidationSearch = () => {
   };
 
   return (
-    <div /*style={{ height: "20rem" }}*/>
+    <div>
       <div>
         <Formik
           initialValues={initFormikValue()}

@@ -1,5 +1,5 @@
 import { Button, Table, message, Typography } from "antd";
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
 import { useHistory, useRouteMatch, withRouter } from "react-router-dom";
 import moment from "moment";
 import { FORM_COLOR_OPTION, FORM_MODE, GENDER_OPTION } from "./Constant";
@@ -14,7 +14,7 @@ const ValidationTable = () => {
     showForm,
   } = useContext(MyContext);
   const [tableDataSource, setTableDataSource] = useState([]);
-  const [title, setTitle] = useState("全部資料");
+  const title = useRef("全部資料");
   const history = useHistory();
   const match = useRouteMatch("/:columnKey/:order");
 
@@ -25,12 +25,12 @@ const ValidationTable = () => {
       return;
     }
     targetList = validationFormList;
-    setTitle("全部資料");
+    title.current = "全部資料";
     if (searchResultList !== null) {
       targetList = searchResultList;
-      setTitle("搜尋結果");
+      title.current = "搜尋結果";
       if (Object.keys(searchResultList).length === 0) {
-        setTitle("查無資料");
+        title.current = "查無資料";
       }
     }
 
@@ -217,7 +217,7 @@ const ValidationTable = () => {
 
   return (
     <div>
-      <Title style={{ textAlign: "center" }}>{title}</Title>
+      <Title style={{ textAlign: "center" }}>{title.current}</Title>
       <Table
         onChange={onTableChange}
         pagination={pagination}

@@ -20,6 +20,7 @@ import DateTimePickerStartEnd from "./DateTimePickerStartEnd";
 import { useContext, useState, useEffect } from "react";
 import { MyContext } from "./TrainingTwo";
 import { useFormikContext } from "formik";
+import { useRef } from "react";
 
 const { Title } = Typography;
 const ValidationFormInFormik = (props) => {
@@ -45,17 +46,17 @@ const ValidationFormInFormik = (props) => {
     validateForm,
     setTouched,
   } = useFormikContext();
-  const [title, setTitle] = useState("新增資料");
+  const title = useRef("新增資料");
   useEffect(() => {
     handleReset();
     setFieldValue("isEditMode", false, false);
     switch (formMode) {
       case FORM_MODE.ADD:
-        setTitle("新增資料");
+        title.current = "新增資料";
         break;
       case FORM_MODE.EDIT:
         setFieldValue("isEditMode", true, false);
-        setTitle("編輯資料");
+        title.current = "編輯資料";
         let id = formTargerSerialNumber;
         setFieldValue("serialNumber", validationFormList[id].serialNumber);
         setFieldValue(
@@ -80,7 +81,7 @@ const ValidationFormInFormik = (props) => {
         setFieldValue("gender", validationFormList[id].gender);
         break;
       case FORM_MODE.VIEW:
-        setTitle("檢視資料");
+        title.current = "檢視資料";
         let viewID = formTargerSerialNumber;
         setFieldValue("serialNumber", validationFormList[viewID].serialNumber);
         setFieldValue(
@@ -176,7 +177,7 @@ const ValidationFormInFormik = (props) => {
           }
         }}
       >
-        <Title style={{ textAlign: "center" }}>{title}</Title>
+        <Title style={{ textAlign: "center" }}>{title.current}</Title>
         <Form {...layout}>
           <Row gutter={[16, 16]}>
             <Col sm={{ span: 24 }} md={{ span: 12 }} xl={{ span: 6 }}>
