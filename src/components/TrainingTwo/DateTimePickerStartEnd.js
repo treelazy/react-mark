@@ -5,7 +5,6 @@ import moment from "moment";
 import locale from "antd/es/date-picker/locale/zh_CN";
 import { useFormikContext } from "formik";
 const DateTimePickerStartEnd = (props) => {
-
   const [startDateDefault, setStartDateDefault] = useState(null);
   const [endDateDefault, setEndDateDefault] = useState(null);
 
@@ -90,14 +89,15 @@ const DateTimePickerStartEnd = (props) => {
   return (
     <>
       <Col sm={24} lg={12} xl={8}>
-        <Form.Item label="開始時間" colon={false} required
-          validateStatus={
-            props.errorMessage
-              ? "error"
-              : "success"
-          }
-          help={props.errorMessage ? props.errorMessage.split(",")[0] : ""}>
+        <Form.Item
+          label="開始時間"
+          colon={false}
+          required
+          validateStatus={props.errorMessage ? "error" : "success"}
+          help={props.errorMessage ? props.errorMessage.split(",")[0] : ""}
+        >
           <DatePicker
+            style={{ marginRight: "1rem" }}
             disabled={props.disabled}
             showToday={false}
             placeholder={datePlaceholder}
@@ -115,7 +115,7 @@ const DateTimePickerStartEnd = (props) => {
               startDateDefault === null ? null : moment(startDateDefault)
             }
           />
-          &nbsp;&nbsp;
+
           <TimePicker
             disabled={props.disabled}
             placeholder={timePlaceholder}
@@ -132,14 +132,15 @@ const DateTimePickerStartEnd = (props) => {
         </Form.Item>
       </Col>
       <Col sm={24} lg={12} xl={8}>
-        <Form.Item label="結束時間" colon={false} required
-          validateStatus={
-            props.errorMessage
-              ? "error"
-              : "success"
-          }
-          help={props.errorMessage ? props.errorMessage.split(",")[1] : ""}>
+        <Form.Item
+          label="結束時間"
+          colon={false}
+          required
+          validateStatus={props.errorMessage ? "error" : "success"}
+          help={props.errorMessage ? props.errorMessage.split(",")[1] : ""}
+        >
           <DatePicker
+            style={{ marginRight: "1rem" }}
             disabled={props.disabled}
             showToday={false}
             placeholder={datePlaceholder}
@@ -155,7 +156,7 @@ const DateTimePickerStartEnd = (props) => {
               endDateDefault === null ? null : moment(endDateDefault)
             }
           />
-          &nbsp;&nbsp;
+
           <TimePicker
             disabled={props.disabled}
             placeholder={timePlaceholder}

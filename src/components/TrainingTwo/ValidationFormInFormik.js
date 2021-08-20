@@ -17,7 +17,7 @@ import {
 import { getDescriptionLength } from "./validationSchema";
 import { FORM_COLOR_OPTION, FORM_MODE, GENDER_OPTION } from "./Constant";
 import DateTimePickerStartEnd from "./DateTimePickerStartEnd";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect } from "react";
 import { MyContext } from "./TrainingTwo";
 import { useFormikContext } from "formik";
 import { useRef } from "react";
@@ -120,8 +120,8 @@ const ValidationFormInFormik = (props) => {
   ]);
 
   const layout = {
-    labelCol: { sm: { span: 24 }, md: { span: 6 } },
-    wrapperCol: { sm: { span: 24 }, md: { span: 18 } },
+    labelCol: { sm: { span: 24 }, md: { span: 4 } },
+    wrapperCol: { sm: { span: 24 }, md: { span: 20 } },
   };
   return (
     <div>
@@ -283,8 +283,16 @@ const ValidationFormInFormik = (props) => {
             <Col span={0} />
             <Col span={24}>
               <Form.Item
-                labelCol={{ span: 24 }}
-                wrapperCol={{ span: 24 }}
+                labelCol={{
+                  sm: { span: 24 },
+                  md: { span: 2 },
+                  xl: { span: 1 },
+                }}
+                wrapperCol={{
+                  sm: { span: 24 },
+                  md: { span: 22 },
+                  xl: { span: 23 },
+                }}
                 label="描述"
                 colon={false}
                 validateStatus={
@@ -355,6 +363,7 @@ const ValidationFormInFormik = (props) => {
                   <>
                     <Col span={4}>
                       <Switch
+                        style={{ marginRight: "1rem" }}
                         onChange={(value) => {
                           setFieldValue("hasUpperLimit", value, false);
                           if (!value) {
@@ -365,7 +374,6 @@ const ValidationFormInFormik = (props) => {
                         checked={values.hasUpperLimit}
                         value={values.hasUpperLimit}
                       />
-                      &nbsp;&nbsp;&nbsp;
                     </Col>
                     <Col span={20}>
                       <Input
